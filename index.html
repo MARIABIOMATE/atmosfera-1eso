@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Atmósfera - 1º ESO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .word-reveal {
+            animation: wordReveal 0.8s ease-out;
+        }
+        @keyframes wordReveal {
+            0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+            50% { transform: scale(1.2) rotate(5deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        .secret-word {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: inline-block;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const blocks = {
+            1: { title: "ORIGEN DE LA ATMÓSFERA", icon: "🌋", color: "from-orange-500 to-red-600", desc: "Las 4 etapas evolutivas" },
+            2: { title: "COMPOSICIÓN DEL AIRE", icon: "💨", color: "from-blue-400 to-cyan-500", desc: "Gases y porcentajes" },
+            3: { title: "CAPAS DE LA ATMÓSFERA", icon: "🌍", color: "from-indigo-500 to-purple-600", desc: "Troposfera, estratosfera..." },
+            4: { title: "FUNCIONES DE LA ATMÓSFERA", icon: "🛡️", color: "from-green-500 to-emerald-600", desc: "Protección y vida" },
+            5: { title: "CONTAMINACIÓN ATMOSFÉRICA", icon: "🏭", color: "from-gray-600 to-gray-800", desc: "Causas y efectos" },
+            6: { title: "EFECTO INVERNADERO Y OZONO", icon: "☀️", color: "from-yellow-500 to-orange-500", desc: "Fenómenos especiales" }
+        };
+
+        const levelNames = {
+            "1": { 
+                "1.1": "Primera etapa - Origen volcánico", 
+                "1.2": "Segunda etapa - Formación océanos", 
+                "1.3": "Tercera etapa - Aparición fotosíntesis", 
+                "1.4": "Cuarta etapa - Atmósfera actual" 
+            },
+            "2": { 
+                "2.1": "Nitrógeno y oxígeno", 
+                "2.2": "Gases minoritarios", 
+                "2.3": "Vapor de agua y partículas", 
+                "2.4": "Composición completa" 
+            },
+            "3": { 
+                "3.1": "Troposfera", 
+                "3.2": "Estratosfera y capa de ozono", 
+                "3.3": "Mesosfera y termosfera", 
+                "3.4": "Exosfera y características generales" 
+            },
+            "4": { 
+                "4.1": "Regulación térmica", 
+                "4.2": "Protección contra radiaciones", 
+                "4.3": "Gases esenciales para la vida", 
+                "4.4": "Fenómenos meteorológicos" 
+            },
+            "5": { 
+                "5.1": "Tipos de contaminantes", 
+                "5.2": "Lluvia ácida", 
+                "5.3": "Smog y calidad del aire", 
+                "5.4": "Soluciones y prevención" 
+            },
+            "6": { 
+                "6.1": "Efecto invernadero natural", 
+                "6.2": "Calentamiento global", 
+                "6.3": "Capa de ozono", 
+                "6.4": "Agujero de ozono y CFCs" 
+            }
+        };
+
+        // PALABRAS SECRETAS - Frase: "LA ATMÓSFERA PROTEGE LA VIDA EN LA TIERRA GRACIAS AL OXÍGENO Y LA CAPA DE OZONO QUE DEBEMOS PROTEGER SIEMPRE PARA NUESTRO FUTURO SOSTENIBLE"
+        const secretWords = {
+            "1-1.1": "LA",
+            "1-1.2": "ATMÓSFERA",
+            "1-1.3": "PROTEGE",
+            "1-1.4": "LA",
+            "2-2.1": "VIDA",
+            "2-2.2": "EN",
+            "2-2.3": "LA",
+            "2-2.4": "TIERRA",
+            "3-3.1": "GRACIAS",
+            "3-3.2": "AL",
+            "3-3.3": "OXÍGENO",
+            "3-3.4": "Y",
+            "4-4.1": "LA",
+            "4-4.2": "CAPA",
+            "4-4.3": "DE",
+            "4-4.4": "OZONO",
+            "5-5.1": "QUE",
+            "5-5.2": "DEBEMOS",
+            "5-5.3": "PROTEGER",
+            "5-5.4": "SIEMPRE",
+            "6-6.1": "PARA",
+            "6-6.2": "NUESTRO",
+            "6-6.3": "FUTURO",
+            "6-6.4": "SOSTENIBLE"
+        };
+
+        const exerciseData = {
+            // BLOQUE 1: ORIGEN DE LA ATMÓSFERA
+            "1-1.1": [
+                { q: "¿Hace cuántos millones de años se originó la atmósfera?", a: "4400", sol: "La atmósfera se originó hace 4400 millones de años" },
+                { q: "¿De dónde procedían los gases de la primera atmósfera?", a: "interior tierra", sol: "Los gases escaparon del interior de la Tierra (masa de roca fundida)" },
+                { q: "¿Qué tipo de actividad geológica era frecuente en esta etapa?", a: "volcanica", sol: "Había gran actividad volcánica en el planeta primitivo" },
+                { q: "¿La Tierra primitiva estaba caliente o fría?", a: "caliente", sol: "La Tierra era una masa de roca fundida muy caliente" },
+                { q: "¿Había oxígeno en la primera atmósfera? (sí/no)", a: "no", sol: "NO había oxígeno en la primera atmósfera" }
+            ],
+            "1-1.2": [
+                { q: "¿Qué gas se condensó para formar los primeros océanos?", a: "vapor agua", sol: "El vapor de agua se condensó y precipitó en forma de lluvias" },
+                { q: "¿Cómo se llama el conjunto de toda el agua del planeta?", a: "hidrosfera", sol: "La hidrosfera es el conjunto de toda el agua del planeta" },
+                { q: "Las primeras lluvias dieron lugar a los _____ y _____", a: "mares oceanos", sol: "Las lluvias dieron lugar a los mares y océanos" },
+                { q: "¿Qué proceso físico transformó el vapor en agua líquida?", a: "condensacion", sol: "La condensación transformó el vapor en agua líquida" },
+                { q: "¿Había ya oxígeno en esta etapa? (sí/no)", a: "no", sol: "Todavía NO había oxígeno en la atmósfera" }
+            ],
+            "1-1.3": [
+                { q: "¿Hace cuántos millones de años aparecieron las primeras bacterias fotosintéticas?", a: "3500", sol: "Hace 3500 millones de años aparecieron las primeras bacterias fotosintéticas" },
+                { q: "¿Qué gas incorporaron a la atmósfera estos organismos?", a: "oxigeno", sol: "La fotosíntesis incorporó oxígeno a la atmósfera" },
+                { q: "¿Qué nombre reciben las primeras bacterias fotosintéticas?", a: "cianobacterias", sol: "Se llamaban cianobacterias" },
+                { q: "Además de bacterias, ¿qué otros seres aumentaron el oxígeno?", a: "plantas algas", sol: "Las plantas y algas aumentaron el proceso fotosintético" },
+                { q: "¿Qué proceso biológico libera oxígeno?", a: "fotosintesis", sol: "La fotosíntesis libera oxígeno a la atmósfera" }
+            ],
+            "1-1.4": [
+                { q: "¿Qué tipo de organismos pudieron aparecer gracias al oxígeno?", a: "animales", sol: "Pudieron aparecer los animales capaces de respirar oxígeno" },
+                { q: "Desde que hay animales, ¿la composición atmosférica cambia mucho? (sí/no)", a: "no", sol: "La atmósfera ha mantenido una composición prácticamente constante" },
+                { q: "¿Hasta qué época podrías viajar sin equipo especial para respirar?", a: "3500 millones", sol: "Desde hace unos 3500 millones de años, cuando apareció el oxígeno" },
+                { q: "¿Por qué las plantas son importantes en la evolución de la atmósfera?", a: "producen oxigeno", sol: "Las plantas producen oxígeno mediante fotosíntesis" },
+                { q: "¿Qué respiramos los animales de la atmósfera?", a: "oxigeno", sol: "Los animales respiran oxígeno" }
+            ],
+
+            // BLOQUE 2: COMPOSICIÓN DEL AIRE
+            "2-2.1": [
+                { q: "¿Qué porcentaje del aire es nitrógeno?", a: "78", sol: "El nitrógeno representa el 78% del aire" },
+                { q: "¿Qué porcentaje del aire es oxígeno?", a: "21", sol: "El oxígeno representa el 21% del aire" },
+                { q: "¿Cuál es el gas más abundante en la atmósfera?", a: "nitrogeno", sol: "El nitrógeno es el gas más abundante (78%)" },
+                { q: "¿Qué gas necesitamos respirar?", a: "oxigeno", sol: "Necesitamos respirar oxígeno" },
+                { q: "Entre nitrógeno y oxígeno, ¿qué porcentaje del aire representan?", a: "99", sol: "Juntos representan el 99% del aire (78% + 21%)" }
+            ],
+            "2-2.2": [
+                { q: "¿Qué porcentaje de CO₂ hay en el aire?", a: "0.033", sol: "El CO₂ representa el 0,033% del aire" },
+                { q: "¿Qué gas absorben las plantas para hacer fotosíntesis?", a: "dioxido carbono", sol: "Las plantas absorben dióxido de carbono (CO₂)" },
+                { q: "¿El argón es un gas mayoritario o minoritario?", a: "minoritario", sol: "El argón es un gas minoritario en la atmósfera" },
+                { q: "Nombre tres gases minoritarios del aire", a: "argon vapor ozono", sol: "Argón, vapor de agua y ozono son gases minoritarios" },
+                { q: "¿El CO₂ es importante para el efecto invernadero? (sí/no)", a: "si", sol: "Sí, el CO₂ es un gas de efecto invernadero" }
+            ],
+            "2-2.3": [
+                { q: "¿En qué estado se encuentra el agua en la atmósfera?", a: "vapor", sol: "El agua está en forma de vapor en la atmósfera" },
+                { q: "¿Las nubes son vapor de agua? (sí/no)", a: "no", sol: "NO, las nubes son gotas de agua líquida o cristales de hielo" },
+                { q: "¿Cómo se llaman las partículas sólidas suspendidas en el aire?", a: "aerosoles", sol: "Se llaman aerosoles o partículas en suspensión" },
+                { q: "¿El polen es una partícula en suspensión? (sí/no)", a: "si", sol: "Sí, el polen es una partícula en suspensión" },
+                { q: "¿El polvo y el humo son partículas en suspensión? (sí/no)", a: "si", sol: "Sí, el polvo y el humo son partículas en suspensión" }
+            ],
+            "2-2.4": [
+                { q: "¿La atmósfera es homogénea en todas sus capas? (sí/no)", a: "no", sol: "NO, la atmósfera NO es homogénea; tiene distintas capas" },
+                { q: "¿Cuántas capas principales tiene la atmósfera?", a: "5", sol: "La atmósfera tiene 5 capas principales" },
+                { q: "Suma los porcentajes de nitrógeno y oxígeno", a: "99", sol: "78% + 21% = 99%" },
+                { q: "¿Qué nombre recibe la mezcla de gases que respiramos?", a: "aire", sol: "La mezcla de gases se llama aire" },
+                { q: "¿El aire tiene masa? (sí/no)", a: "si", sol: "Sí, el aire tiene masa y peso" }
+            ],
+
+            // BLOQUE 3: CAPAS DE LA ATMÓSFERA
+            "3-3.1": [
+                { q: "¿Cuál es la capa más cercana a la superficie terrestre?", a: "troposfera", sol: "La troposfera es la capa más cercana a la Tierra" },
+                { q: "¿Hasta qué altura llega la troposfera? (en km)", a: "12", sol: "La troposfera llega hasta los 12 km de altura" },
+                { q: "¿Qué porcentaje del aire está en la troposfera?", a: "80", sol: "La troposfera contiene el 80% del aire" },
+                { q: "¿Dónde ocurren las lluvias y tormentas?", a: "troposfera", sol: "Los fenómenos meteorológicos ocurren en la troposfera" },
+                { q: "¿La temperatura en la troposfera aumenta o disminuye con la altura?", a: "disminuye", sol: "La temperatura disminuye con la altura en la troposfera" },
+                { q: "¿A qué temperatura puede llegar el límite superior de la troposfera?", a: "-70", sol: "Puede llegar a -70°C en su límite superior" },
+                { q: "¿En qué capa vuelan los aviones comerciales?", a: "troposfera", sol: "Los aviones comerciales vuelan en la troposfera" }
+            ],
+            "3-3.2": [
+                { q: "¿Entre qué alturas se encuentra la estratosfera? (km)", a: "12 50", sol: "La estratosfera está entre los 12 y 50 km de altura" },
+                { q: "¿Qué capa protectora importante hay en la estratosfera?", a: "ozono", sol: "La capa de ozono está en la estratosfera" },
+                { q: "¿Qué radiación bloquea la capa de ozono?", a: "ultravioleta", sol: "La capa de ozono bloquea los rayos ultravioleta" },
+                { q: "¿La temperatura en la estratosfera aumenta o disminuye con la altura?", a: "aumenta", sol: "La temperatura aumenta con la altura en la estratosfera" },
+                { q: "¿Hasta qué temperatura puede llegar la estratosfera?", a: "0", sol: "Puede llegar hasta los 0°C" },
+                { q: "¿Por qué aumenta la temperatura en la estratosfera?", a: "absorcion ultravioleta", sol: "Por la absorción de radiación ultravioleta por el ozono" }
+            ],
+            "3-3.3": [
+                { q: "¿Entre qué alturas está la mesosfera? (km)", a: "50 80", sol: "La mesosfera está entre los 50 y 80 km" },
+                { q: "¿Es la mesosfera la capa más fría o más caliente?", a: "fria", sol: "La mesosfera es la capa MÁS FRÍA de la atmósfera" },
+                { q: "¿Qué temperatura mínima alcanza la mesosfera?", a: "-100", sol: "Puede llegar a -100°C" },
+                { q: "¿Qué se desintegra en la mesosfera?", a: "meteoritos", sol: "Los meteoritos se desintegran en la mesosfera" },
+                { q: "¿Cómo se llaman las 'estrellas fugaces'?", a: "meteoritos", sol: "Son meteoritos que se desintegran en la mesosfera" },
+                { q: "¿Entre qué alturas está la termosfera? (km)", a: "80 500", sol: "La termosfera está entre los 80 y 500 km" },
+                { q: "¿Qué temperatura puede alcanzar la termosfera?", a: "1500", sol: "Puede superar los 1.500°C" },
+                { q: "¿Qué fenómeno luminoso ocurre en la termosfera?", a: "auroras boreales", sol: "Las auroras boreales ocurren en la termosfera" }
+            ],
+            "3-3.4": [
+                { q: "¿Cuál es la capa más externa de la atmósfera?", a: "exosfera", sol: "La exosfera es la capa más externa" },
+                { q: "¿A qué altura comienza la exosfera? (km)", a: "600", sol: "La exosfera comienza alrededor de los 600 km" },
+                { q: "¿Hasta dónde se extiende la exosfera? (km)", a: "10000", sol: "Se extiende hasta los 10.000 km" },
+                { q: "¿Qué tipo de satélites están en la exosfera?", a: "geoestacionarios", sol: "Los satélites geoestacionarios están en la exosfera" },
+                { q: "¿La composición de la exosfera es igual al espacio? (sí/no)", a: "si", sol: "Sí, su composición es igual al espacio interplanetario" },
+                { q: "¿Dónde orbita la Estación Espacial Internacional?", a: "termosfera", sol: "La EEI orbita en la termosfera" },
+                { q: "Ordena de cerca a lejos: exosfera, troposfera, estratosfera", a: "troposfera estratosfera exosfera", sol: "Troposfera, estratosfera, exosfera" }
+            ],
+
+            // BLOQUE 4: FUNCIONES DE LA ATMÓSFERA
+            "4-4.1": [
+                { q: "¿Qué fenómeno regula la temperatura de la Tierra?", a: "efecto invernadero", sol: "El efecto invernadero regula la temperatura" },
+                { q: "¿Los gases de efecto invernadero son buenos o malos?", a: "buenos", sol: "Son BUENOS, permiten la vida al mantener la temperatura" },
+                { q: "Sin atmósfera, ¿la Tierra sería más fría o más caliente?", a: "fria", sol: "Sin atmósfera la Tierra sería mucho más fría" },
+                { q: "¿Qué gas principal es responsable del efecto invernadero?", a: "dioxido carbono", sol: "El dióxido de carbono (CO₂) es el principal" },
+                { q: "¿Los invernaderos de agricultura usan el mismo principio? (sí/no)", a: "si", sol: "Sí, atrapan el calor igual que la atmósfera" }
+            ],
+            "4-4.2": [
+                { q: "¿Qué capa filtra los rayos ultravioleta del Sol?", a: "ozono", sol: "La capa de ozono filtra los rayos ultravioleta" },
+                { q: "¿Los rayos UV son peligrosos para los seres vivos? (sí/no)", a: "si", sol: "Sí, los rayos UV son peligrosos y pueden causar cáncer" },
+                { q: "¿En qué capa atmosférica se encuentra el ozono?", a: "estratosfera", sol: "El ozono está en la estratosfera" },
+                { q: "¿Qué le pasaría a la vida sin la capa de ozono?", a: "peligro radiacion", sol: "La radiación UV dañaría gravemente a los seres vivos" },
+                { q: "¿La atmósfera protege de meteoritos? (sí/no)", a: "si", sol: "Sí, los meteoritos se desintegran en la mesosfera" }
+            ],
+            "4-4.3": [
+                { q: "¿Qué gas necesitan los animales para respirar?", a: "oxigeno", sol: "Los animales necesitan oxígeno (O₂)" },
+                { q: "¿Qué gas necesitan las plantas para la fotosíntesis?", a: "dioxido carbono", sol: "Las plantas necesitan dióxido de carbono (CO₂)" },
+                { q: "¿Qué gas protector hay en la estratosfera?", a: "ozono", sol: "El ozono (O₃) protege de los rayos UV" },
+                { q: "¿Puede haber vida sin atmósfera? (sí/no)", a: "no", sol: "NO puede haber vida sin atmósfera" },
+                { q: "¿La atmósfera contiene gases esenciales para la vida? (sí/no)", a: "si", sol: "Sí, contiene O₂, CO₂ y ozono, esenciales para la vida" }
+            ],
+            "4-4.4": [
+                { q: "¿Dónde ocurren las lluvias y tormentas?", a: "troposfera", sol: "Los fenómenos meteorológicos ocurren en la troposfera" },
+                { q: "¿Las lluvias nos dan agua dulce? (sí/no)", a: "si", sol: "Sí, las lluvias nos proporcionan agua dulce" },
+                { q: "¿Qué fenómeno meteorológico violento tiene vientos en espiral?", a: "tornado", sol: "Los tornados tienen vientos en espiral" },
+                { q: "¿Los huracanes son fenómenos meteorológicos? (sí/no)", a: "si", sol: "Sí, los huracanes son fenómenos meteorológicos" },
+                { q: "¿En qué capa están las nubes?", a: "troposfera", sol: "Las nubes están en la troposfera" }
+            ],
+
+            // BLOQUE 5: CONTAMINACIÓN ATMOSFÉRICA
+            "5-5.1": [
+                { q: "¿Qué es la contaminación atmosférica?", a: "sustancias nocivas", sol: "Presencia de sustancias nocivas en el aire" },
+                { q: "Los óxidos de azufre, ¿son contaminantes? (sí/no)", a: "si", sol: "Sí, los óxidos de azufre son contaminantes" },
+                { q: "Los óxidos de nitrógeno, ¿son contaminantes? (sí/no)", a: "si", sol: "Sí, los óxidos de nitrógeno son contaminantes" },
+                { q: "¿Los CFCs son contaminantes? (sí/no)", a: "si", sol: "Sí, los CFCs destruyen la capa de ozono" },
+                { q: "¿El exceso de CO₂ es contaminación? (sí/no)", a: "si", sol: "Sí, el exceso de CO₂ causa calentamiento global" },
+                { q: "¿Las partículas sólidas contaminan? (sí/no)", a: "si", sol: "Sí, las partículas sólidas contaminan el aire" }
+            ],
+            "5-5.2": [
+                { q: "¿Qué gases causan la lluvia ácida?", a: "oxidos azufre nitrogeno", sol: "Los óxidos de azufre y nitrógeno causan lluvia ácida" },
+                { q: "¿La lluvia ácida daña los bosques? (sí/no)", a: "si", sol: "Sí, la lluvia ácida daña los bosques y cultivos" },
+                { q: "¿La lluvia ácida afecta a los edificios? (sí/no)", a: "si", sol: "Sí, corroe edificios y monumentos" },
+                { q: "¿De dónde proceden los óxidos que causan lluvia ácida?", a: "combustion combustibles", sol: "De la combustión de combustibles fósiles" },
+                { q: "¿La lluvia ácida acidifica lagos y ríos? (sí/no)", a: "si", sol: "Sí, acidifica lagos y ríos matando peces" }
+            ],
+            "5-5.3": [
+                { q: "¿Qué es el smog?", a: "niebla contaminante", sol: "El smog es niebla contaminante con partículas y gases" },
+                { q: "¿El smog es más común en ciudades o en el campo?", a: "ciudades", sol: "El smog es más común en las ciudades" },
+                { q: "¿El smog causa problemas respiratorios? (sí/no)", a: "si", sol: "Sí, causa problemas respiratorios" },
+                { q: "¿Los coches contribuyen al smog? (sí/no)", a: "si", sol: "Sí, los coches emiten gases contaminantes" },
+                { q: "¿Qué tipo de energía NO contamina la atmósfera?", a: "renovable", sol: "Las energías renovables NO contaminan" }
+            ],
+            "5-5.4": [
+                { q: "¿Debemos usar más transporte público para contaminar menos? (sí/no)", a: "si", sol: "Sí, el transporte público contamina menos" },
+                { q: "¿Reciclar ayuda a reducir la contaminación? (sí/no)", a: "si", sol: "Sí, reciclar ayuda a reducir la contaminación" },
+                { q: "¿Ahorrar energía reduce la contaminación? (sí/no)", a: "si", sol: "Sí, ahorrar energía reduce la contaminación" },
+                { q: "¿Las energías renovables contaminan? (sí/no)", a: "no", sol: "NO, las energías renovables no contaminan" },
+                { q: "¿Plantar árboles ayuda a limpiar el aire? (sí/no)", a: "si", sol: "Sí, los árboles absorben CO₂ y limpian el aire" },
+                { q: "¿Necesitamos acuerdos internacionales contra la contaminación? (sí/no)", a: "si", sol: "Sí, se necesitan acuerdos internacionales" }
+            ],
+
+            // BLOQUE 6: EFECTO INVERNADERO Y OZONO
+            "6-6.1": [
+                { q: "¿El efecto invernadero natural es bueno o malo?", a: "bueno", sol: "El efecto invernadero NATURAL es BUENO" },
+                { q: "¿Qué pasaría sin efecto invernadero?", a: "tierra fria", sol: "La Tierra sería demasiado fría para la vida" },
+                { q: "¿Qué gases causan el efecto invernadero?", a: "co2 metano vapor", sol: "CO₂, metano y vapor de agua" },
+                { q: "¿Los gases invernadero atrapan calor? (sí/no)", a: "si", sol: "Sí, atrapan el calor cerca de la superficie" },
+                { q: "¿El efecto invernadero mantiene la temperatura agradable? (sí/no)", a: "si", sol: "Sí, mantiene una temperatura agradable para la vida" }
+            ],
+            "6-6.2": [
+                { q: "¿El calentamiento global es natural o causado por humanos?", a: "humanos", sol: "El calentamiento global actual es causado por humanos" },
+                { q: "¿Qué causa el calentamiento global?", a: "exceso co2", sol: "El exceso de CO₂ por quemar combustibles fósiles" },
+                { q: "¿El calentamiento global derrite los polos? (sí/no)", a: "si", sol: "Sí, el calentamiento global derrite los polos" },
+                { q: "¿Qué actividades humanas aumentan el CO₂?", a: "quemar combustibles", sol: "Quemar combustibles fósiles (petróleo, carbón, gas)" },
+                { q: "¿El nivel del mar sube con el calentamiento global? (sí/no)", a: "si", sol: "Sí, el nivel del mar sube al derretirse el hielo" },
+                { q: "¿Debemos reducir las emisiones de CO₂? (sí/no)", a: "si", sol: "Sí, debemos reducir las emisiones de CO₂" }
+            ],
+            "6-6.3": [
+                { q: "¿Dónde está la capa de ozono?", a: "estratosfera", sol: "La capa de ozono está en la estratosfera" },
+                { q: "¿Qué radiación bloquea la capa de ozono?", a: "ultravioleta", sol: "Bloquea los rayos ultravioleta (UV)" },
+                { q: "¿Para qué sirve la capa de ozono?", a: "proteger vida", sol: "Protege la vida de los rayos UV dañinos" },
+                { q: "¿Los rayos UV causan cáncer de piel? (sí/no)", a: "si", sol: "Sí, los rayos UV pueden causar cáncer de piel" },
+                { q: "¿Es importante proteger la capa de ozono? (sí/no)", a: "si", sol: "Sí, es vital para proteger la vida" }
+            ],
+            "6-6.4": [
+                { q: "¿Qué es el agujero de la capa de ozono?", a: "reduccion ozono", sol: "Es una reducción del ozono en ciertas zonas" },
+                { q: "¿Qué gases destruyen la capa de ozono?", a: "cfcs", sol: "Los CFCs (clorofluorocarbonos)" },
+                { q: "¿Dónde está el agujero de ozono principal?", a: "antartida", sol: "Sobre la Antártida (Polo Sur)" },
+                { q: "¿Los CFCs se usaban en aerosoles y frigoríficos? (sí/no)", a: "si", sol: "Sí, se usaban en aerosoles y refrigerantes" },
+                { q: "¿Están prohibidos los CFCs ahora? (sí/no)", a: "si", sol: "Sí, están prohibidos por acuerdos internacionales" },
+                { q: "¿La capa de ozono se está recuperando? (sí/no)", a: "si", sol: "Sí, lentamente se está recuperando" }
+            ]
+        };
+
+        let state = {
+            selectedBlock: null,
+            selectedLevel: null,
+            answers: {},
+            showResults: {},
+            studentName: localStorage.getItem('studentName_atmosfera') || '',
+            showNameModal: !localStorage.getItem('studentName_atmosfera'),
+            statistics: JSON.parse(localStorage.getItem('statistics_atmosfera') || '{}'),
+            levelProgress: JSON.parse(localStorage.getItem('levelProgress_atmosfera') || '{}'),
+            collectedWords: JSON.parse(localStorage.getItem('collectedWords_atmosfera') || '{}'),
+            showWordModal: false,
+            currentWord: null
+        };
+
+        function saveState() {
+            localStorage.setItem('studentName_atmosfera', state.studentName);
+            localStorage.setItem('statistics_atmosfera', JSON.stringify(state.statistics));
+            localStorage.setItem('levelProgress_atmosfera', JSON.stringify(state.levelProgress));
+            localStorage.setItem('collectedWords_atmosfera', JSON.stringify(state.collectedWords));
+        }
+
+        function checkAnswer(key, correct) {
+            const userAnswer = (state.answers[key] || '').trim().toLowerCase().replace(/\s/g, '');
+            const correctAnswer = correct.toLowerCase().replace(/\s/g, '');
+            const isCorrect = userAnswer === correctAnswer;
+            
+            state.showResults[key] = isCorrect;
+            const parts = key.split('-');
+            const statKey = parts[0] + '-' + parts[1];
+            
+            if (!state.statistics[statKey]) {
+                state.statistics[statKey] = { total: 0, correct: 0 };
+            }
+            if (!state.levelProgress[statKey]) {
+                state.levelProgress[statKey] = {};
+            }
+            if (state.levelProgress[statKey][key] === undefined) {
+                state.statistics[statKey].total++;
+                if (isCorrect) state.statistics[statKey].correct++;
+                state.levelProgress[statKey][key] = isCorrect;
+            }
+
+            saveState();
+            checkLevelCompletion(statKey);
+            render();
+        }
+
+        function checkLevelCompletion(statKey) {
+            const exercises = exerciseData[statKey] || [];
+            const totalExercises = exercises.length;
+            const answeredExercises = Object.keys(state.levelProgress[statKey] || {}).length;
+            
+            if (answeredExercises === totalExercises && totalExercises > 0 && !state.collectedWords[statKey]) {
+                const word = secretWords[statKey];
+                state.collectedWords[statKey] = word;
+                state.currentWord = word;
+                state.showWordModal = true;
+                saveState();
+                render();
+            }
+        }
+
+        function closeWordModal() {
+            state.showWordModal = false;
+            state.currentWord = null;
+            render();
+        }
+
+        function copyWord(word) {
+            navigator.clipboard.writeText(word).then(() => {
+                showNotification('📋 Palabra copiada', 'La palabra "' + word + '" se ha copiado al portapapeles', 'success');
+            }).catch(() => {
+                showNotification('⚠️ No se pudo copiar', 'Copia la palabra manualmente', 'warning');
+            });
+        }
+
+        function showNotification(title, message, type) {
+            const bgColor = type === 'success' ? 'bg-green-50 border-green-300' : 'bg-yellow-50 border-yellow-300';
+            const textColor = type === 'success' ? 'text-green-800' : 'text-yellow-800';
+            
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 z-50 ' + bgColor + ' border-2 rounded-xl p-6 shadow-2xl max-w-md fade-in';
+            notification.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg ${textColor} mb-2">${title}</h3>
+                        <p class="${textColor} whitespace-pre-line">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="${textColor} hover:opacity-70 text-2xl">✕</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => { if (notification.parentElement) notification.remove(); }, 5000);
+        }
+
+        function generateReport() {
+            let totalExercises = 0;
+            let totalCorrect = 0;
+            let totalWords = Object.keys(state.collectedWords).length;
+            let totalPossibleWords = Object.keys(secretWords).length;
+            
+            Object.entries(state.statistics).forEach(([key, stats]) => {
+                totalExercises += stats.total;
+                totalCorrect += stats.correct;
+            });
+            
+            const overallPercentage = totalExercises > 0 ? ((totalCorrect / totalExercises) * 100).toFixed(1) : 0;
+            return { totalExercises, totalCorrect, overallPercentage, totalWords, totalPossibleWords };
+        }
+
+        function getCompletedPhrase() {
+            const orderedKeys = [
+                "1-1.1", "1-1.2", "1-1.3", "1-1.4",
+                "2-2.1", "2-2.2", "2-2.3", "2-2.4",
+                "3-3.1", "3-3.2", "3-3.3", "3-3.4",
+                "4-4.1", "4-4.2", "4-4.3", "4-4.4",
+                "5-5.1", "5-5.2", "5-5.3", "5-5.4",
+                "6-6.1", "6-6.2", "6-6.3", "6-6.4"
+            ];
+            
+            const words = orderedKeys.map(key => state.collectedWords[key] || "____").join(" ");
+            return words;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            const report = generateReport();
+            
+            let html = '';
+
+            if (state.showWordModal && state.currentWord) {
+                html += `<div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full fade-in">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🎉</div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4">¡Nivel Completado!</h2>
+                            <p class="text-gray-600 mb-6">Has conseguido una palabra secreta:</p>
+                            
+                            <div class="secret-word word-reveal">
+                                ${state.currentWord}
+                            </div>
+                            
+                            <div class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 mb-6">
+                                <p class="text-yellow-800 font-medium">
+                                    📝 <strong>¡IMPORTANTE!</strong> Anota esta palabra en tu hoja de recogida. La necesitarás para formar la frase final.
+                                </p>
+                            </div>
+                            
+                            <div class="flex gap-3 justify-center">
+                                <button onclick="copyWord('${state.currentWord}')" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-lg">
+                                    📋 Copiar Palabra
+                                </button>
+                                <button onclick="closeWordModal()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition font-medium shadow-lg">
+                                    ✓ Continuar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            if (state.showNameModal && !state.studentName) {
+                html += `<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full fade-in">
+                        <div class="text-6xl text-center mb-4">🌍</div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">¡Bienvenido a La Atmósfera!</h2>
+                        <p class="text-gray-600 mb-6 text-center">Por favor, introduce tu nombre para comenzar tu aventura:</p>
+                        <input type="text" id="nameInput" placeholder="Tu nombre completo" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none mb-4">
+                        <button onclick="setName()" class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg hover:from-blue-700 hover:to-cyan-700 transition font-medium shadow-lg">
+                            🚀 Comenzar Aventura
+                        </button>
+                    </div>
+                </div>`;
+            }
+
+            html += `<div class="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100 p-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl shadow-2xl p-8 mb-8 text-white relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
+                        <div class="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-10 rounded-full -ml-24 -mb-24"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="bg-white p-4 rounded-xl shadow-lg">
+                                        <span class="text-5xl">🌍</span>
+                                    </div>
+                                    <div>
+                                        <h1 class="text-4xl font-bold mb-2">La Atmósfera</h1>
+                                        <p class="text-blue-100 text-lg">Biología y Geología - 1º ESO 🌤️</p>
+                                        ${state.studentName ? `<p class="text-blue-200 text-sm mt-1 font-medium">👤 ${state.studentName}</p>` : ''}
+                                    </div>
+                                </div>
+                                ${report.totalWords > 0 ? `<button onclick="showWordsModal()" class="bg-purple-600 text-white px-6 py-3 rounded-xl hover:bg-purple-700 transition shadow-lg font-medium">
+                                    🔤 Mis Palabras (${report.totalWords}/${report.totalPossibleWords})
+                                </button>` : ''}
+                            </div>
+                            
+                            <div class="flex gap-4 mt-6 flex-wrap">
+                                <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur"><span class="font-semibold">🎯 6 Bloques Temáticos</span></div>
+                                <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur"><span class="font-semibold">📚 24 Niveles</span></div>
+                                <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur"><span class="font-semibold">✍️ +120 Ejercicios</span></div>
+                                ${Object.keys(state.statistics).length > 0 ? `<div class="bg-green-400 bg-opacity-90 px-4 py-2 rounded-lg backdrop-blur"><span class="font-semibold">✅ ${report.totalCorrect}/${report.totalExercises} correctos</span></div>` : ''}
+                                ${report.totalWords > 0 ? `<div class="bg-purple-400 bg-opacity-90 px-4 py-2 rounded-lg backdrop-blur"><span class="font-semibold">🔤 ${report.totalWords}/${report.totalPossibleWords} palabras</span></div>` : ''}
+                            </div>
+                            
+                            ${state.selectedLevel ? `<div class="mt-4 bg-yellow-300 bg-opacity-90 px-4 py-2 rounded-lg backdrop-blur"><span class="font-semibold text-gray-800">🎁 Al completar este nivel recibirás una palabra secreta</span></div>` : ''}
+                        </div>
+                    </div>
+                    ${!state.selectedBlock ? renderBlockSelection() : (!state.selectedLevel ? renderLevelSelection() : renderExercises())}
+                </div>
+            </div>`;
+
+            app.innerHTML = html;
+        }
+
+        function showWordsModal() {
+            const orderedKeys = [
+                "1-1.1", "1-1.2", "1-1.3", "1-1.4",
+                "2-2.1", "2-2.2", "2-2.3", "2-2.4",
+                "3-3.1", "3-3.2", "3-3.3", "3-3.4",
+                "4-4.1", "4-4.2", "4-4.3", "4-4.4",
+                "5-5.1", "5-5.2", "5-5.3", "5-5.4",
+                "6-6.1", "6-6.2", "6-6.3", "6-6.4"
+            ];
+            
+            let modalHTML = `<div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4" onclick="this.remove()">
+                <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto fade-in" onclick="event.stopPropagation()">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                            <span class="text-4xl">🔤</span> Mis Palabras Secretas
+                        </h2>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-gray-500 hover:text-gray-700 text-3xl">✕</button>
+                    </div>
+                    
+                    <div class="bg-purple-50 border-2 border-purple-300 rounded-lg p-6 mb-6">
+                        <h3 class="font-bold text-lg text-purple-900 mb-3">📝 Frase Completa:</h3>
+                        <p class="text-xl font-medium text-purple-800 leading-relaxed">
+                            ${getCompletedPhrase()}
+                        </p>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        ${orderedKeys.map((key, index) => {
+                            const word = state.collectedWords[key];
+                            const parts = key.split('-');
+                            const blockId = parts[0];
+                            const levelId = parts[1];
+                            const blockName = blocks[blockId]?.title || 'Bloque ' + blockId;
+                            const levelName = levelNames[blockId]?.[levelId] || 'Nivel ' + levelId;
+                            
+                            return `<div class="border-2 ${word ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-gray-50'} rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="text-sm text-gray-600 mb-1">Nivel ${levelId}</div>
+                                        <div class="text-xs text-gray-500">${blockName}</div>
+                                    </div>
+                                    <div class="text-right">
+                                        ${word ? `<div class="text-2xl font-bold text-green-700">${word}</div>` : `<div class="text-gray-400">🔒 Bloqueada</div>`}
+                                    </div>
+                                </div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                    
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="copyPhrase()" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-medium shadow-lg">
+                            📋 Copiar Frase Completa
+                        </button>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-medium shadow-lg">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+            
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv.firstElementChild);
+        }
+
+        function copyPhrase() {
+            const phrase = getCompletedPhrase();
+            navigator.clipboard.writeText(phrase).then(() => {
+                showNotification('📋 Frase copiada', 'La frase completa se ha copiado al portapapeles', 'success');
+            }).catch(() => {
+                showNotification('⚠️ No se pudo copiar', 'Copia la frase manualmente', 'warning');
+            });
+        }
+
+        function renderBlockSelection() {
+            return `<div class="fade-in">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                    <span class="text-4xl">🎓</span> 
+                    Selecciona un Bloque Temático
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${Object.entries(blocks).map(([id, block]) => {
+                        const completedLevels = Object.keys(levelNames[id] || {}).filter(levelId => {
+                            const statKey = id + '-' + levelId;
+                            return state.collectedWords[statKey];
+                        }).length;
+                        const totalLevels = Object.keys(levelNames[id] || {}).length;
+                        
+                        return `<div onclick="selectBlock('${id}')" class="bg-gradient-to-br ${block.color} rounded-2xl shadow-xl p-6 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl text-white relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 text-9xl opacity-10 group-hover:opacity-20 transition-opacity -mr-4 -mt-4">
+                                ${block.icon}
+                            </div>
+                            
+                            <div class="relative z-10">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="text-6xl">${block.icon}</div>
+                                    ${completedLevels > 0 ? `<span class="bg-white bg-opacity-30 backdrop-blur px-3 py-1 rounded-full text-sm font-bold">
+                                        🔤 ${completedLevels}/${totalLevels}
+                                    </span>` : ''}
+                                </div>
+                                
+                                <h3 class="font-bold text-xl mb-2 leading-tight">${block.title}</h3>
+                                <p class="text-white text-opacity-90 text-sm mb-4">${block.desc}</p>
+                                
+                                <div class="mt-4 flex items-center text-white font-medium group-hover:gap-3 transition-all">
+                                    Explorar <span class="ml-2 text-2xl">→</span>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+        }
+
+        function renderLevelSelection() {
+            const block = blocks[state.selectedBlock];
+            return `<div class="fade-in">
+                <button onclick="backToBlocks()" class="mb-6 px-6 py-3 bg-white rounded-xl hover:bg-gray-50 transition shadow-lg flex items-center gap-2 font-medium">
+                    <span class="text-xl">←</span> Volver a Bloques
+                </button>
+                
+                <div class="bg-gradient-to-r ${block.color} rounded-2xl shadow-xl p-8 mb-8 text-white">
+                    <div class="flex items-center gap-4 flex-wrap">
+                        <div class="text-7xl">${block.icon}</div>
+                        <div class="flex-1">
+                            <h2 class="text-3xl font-bold mb-2">${block.title}</h2>
+                            <p class="text-white text-opacity-90 text-lg">${block.desc}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    ${Object.entries(levelNames[state.selectedBlock] || {}).map(([levelId, levelName]) => {
+                        const statKey = state.selectedBlock + '-' + levelId;
+                        const stats = state.statistics[statKey];
+                        const hasStats = stats && stats.total > 0;
+                        const hasWord = state.collectedWords[statKey];
+                        const word = secretWords[statKey];
+                        const isComplete = hasStats && stats.correct === stats.total;
+                        const percentage = hasStats ? ((stats.correct / stats.total) * 100).toFixed(0) : 0;
+                        
+                        return `<div onclick="selectLevel('${levelId}')" class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-2xl transition-all transform hover:scale-105 border-2 ${hasWord ? 'border-purple-400' : 'border-transparent'}">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-gradient-to-r from-blue-400 to-cyan-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                                    Nivel ${levelId}
+                                </span>
+                                ${hasWord ? `<div class="bg-purple-100 px-3 py-1 rounded-full">
+                                    <span class="text-purple-700 font-bold text-sm">🔤 ${word}</span>
+                                </div>` : `<div class="text-gray-400 text-sm">🔒 Sin palabra</div>`}
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-800 mb-2">${levelName}</h3>
+                            ${hasStats ? `<div class="text-sm text-gray-600">
+                                ✓ ${stats.correct}/${stats.total} correctos (${percentage}%)
+                            </div>` : ''}
+                            <div class="flex items-center text-blue-600 font-medium mt-3">
+                                ${hasStats ? 'Repasar' : 'Comenzar'} <span class="ml-2">→</span>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+        }
+
+        function renderExercises() {
+            const exercises = exerciseData[state.selectedBlock + '-' + state.selectedLevel] || [];
+            const statKey = state.selectedBlock + '-' + state.selectedLevel;
+            const stats = state.statistics[statKey] || { total: 0, correct: 0 };
+            const block = blocks[state.selectedBlock];
+            const percentage = stats.total > 0 ? ((stats.correct / stats.total) * 100).toFixed(0) : 0;
+            const hasWord = state.collectedWords[statKey];
+            const word = secretWords[statKey];
+            
+            return `<div class="fade-in">
+                <div class="flex gap-2 mb-6 flex-wrap">
+                    <button onclick="backToLevels()" class="px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50 transition flex items-center gap-2">
+                        <span>←</span> Niveles
+                    </button>
+                    <button onclick="backToBlocks()" class="px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50 transition flex items-center gap-2">
+                        🏠 Inicio
+                    </button>
+                    <div class="flex-1"></div>
+                    ${stats.total > 0 ? `<div class="px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg shadow font-semibold text-green-800 border-2 border-green-300">
+                        ✅ ${stats.correct}/${stats.total} (${percentage}%)
+                    </div>` : ''}
+                    ${hasWord ? `<div class="px-4 py-2 bg-purple-100 rounded-lg shadow font-semibold text-purple-800 border-2 border-purple-300">
+                        🔤 ${word}
+                    </div>` : ''}
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 border-l-4 border-blue-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-4xl">${block.icon}</span>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">
+                                Nivel ${state.selectedLevel}: ${levelNames[state.selectedBlock]?.[state.selectedLevel]}
+                            </h2>
+                            <p class="text-gray-600 mt-1">${block.title}</p>
+                        </div>
+                    </div>
+                    ${!hasWord ? `<div class="bg-purple-50 border-l-4 border-purple-400 p-4 rounded mt-4">
+                        <p class="text-purple-800 text-sm font-medium">
+                            <strong>🎁 Recompensa:</strong> Al completar todos los ejercicios de este nivel, recibirás una palabra secreta para tu colección.
+                        </p>
+                    </div>` : `<div class="

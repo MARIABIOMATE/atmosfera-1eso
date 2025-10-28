@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoja de Recogida - Palabras Secretas</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+            .page-break { page-break-after: always; }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            background: #f5f5f5;
+        }
+        
+        .sheet {
+            background: white;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            color: #1e40af;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        
+        .header h2 {
+            color: #3b82f6;
+            margin: 0;
+            font-size: 18px;
+            font-weight: normal;
+        }
+        
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+        
+        .info-field {
+            flex: 1;
+            margin-right: 20px;
+        }
+        
+        .info-field:last-child {
+            margin-right: 0;
+        }
+        
+        .info-field label {
+            display: block;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .info-field input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #3b82f6;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .block {
+            margin-bottom: 30px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        
+        .block-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d1d5db;
+        }
+        
+        .block-icon {
+            font-size: 32px;
+        }
+        
+        .block-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .levels {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .level-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+        }
+        
+        .level-checkbox {
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+        }
+        
+        .level-label {
+            font-weight: 600;
+            color: #1f2937;
+            min-width: 80px;
+            font-size: 14px;
+        }
+        
+        .word-input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 2px dashed #9ca3af;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            background: #f9fafb;
+        }
+        
+        .final-phrase {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .final-phrase h3 {
+            margin: 0 0 15px 0;
+            font-size: 22px;
+            text-align: center;
+        }
+        
+        .phrase-lines {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            min-height: 100px;
+        }
+        
+        .phrase-line {
+            border-bottom: 2px solid #9ca3af;
+            margin-bottom: 12px;
+            min-height: 30px;
+            color: #374151;
+            padding: 5px 0;
+        }
+        
+        .instructions {
+            margin: 20px 0;
+            padding: 15px;
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            border-radius: 6px;
+        }
+        
+        .instructions h3 {
+            margin: 0 0 10px 0;
+            color: #92400e;
+            font-size: 16px;
+        }
+        
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
+            color: #78350f;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            padding-top: 15px;
+            border-top: 2px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 30px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+            z-index: 1000;
+        }
+        
+        .print-button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Imprimir Hoja</button>
+    
+    <div class="sheet">
+        <div class="header">
+            <h1>🌍 LA ATMÓSFERA - PALABRAS SECRETAS 🔤</h1>
+            <h2>Biología y Geología - 1º ESO</h2>
+        </div>
+        
+        <div class="student-info">
+            <div class="info-field">
+                <label>Nombre y Apellidos:</label>
+                <input type="text" />
+            </div>
+            <div class="info-field" style="max-width: 150px;">
+                <label>Curso:</label>
+                <input type="text" value="1º ESO" />
+            </div>
+            <div class="info-field" style="max-width: 150px;">
+                <label>Fecha:</label>
+                <input type="text" />
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 INSTRUCCIONES:</h3>
+            <ol>
+                <li><strong>Completa cada nivel</strong> de la aplicación web</li>
+                <li><strong>Apunta la palabra secreta</strong> que aparece al terminar cada nivel</li>
+                <li><strong>Marca la casilla ☑️</strong> cuando hayas conseguido la palabra</li>
+                <li>Al final, <strong>copia todas las palabras en orden</strong> para formar la frase final</li>
+                <li><strong>Entrega esta hoja</strong> a tu profesor/a como prueba de que completaste todo</li>
+            </ol>
+        </div>
+        
+        <!-- BLOQUE 1 -->
+        <div class="block">
+            <div class="block-header">
+                <span class="block-icon">🌋</span>
+                <span class="block-title">BLOQUE 1: ORIGEN DE LA ATMÓSFERA</span>
+            </div>
+            <div class="levels">
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 1.1:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 1.2:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 1.3:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 1.4:</span>
+                    <input type="text" class="word-input" />
+                </div>
+            </div>
+        </div>
+        
+        <!-- BLOQUE 2 -->
+        <div class="block">
+            <div class="block-header">
+                <span class="block-icon">💨</span>
+                <span class="block-title">BLOQUE 2: COMPOSICIÓN DEL AIRE</span>
+            </div>
+            <div class="levels">
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 2.1:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 2.2:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 2.3:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 2.4:</span>
+                    <input type="text" class="word-input" />
+                </div>
+            </div>
+        </div>
+        
+        <!-- BLOQUE 3 -->
+        <div class="block">
+            <div class="block-header">
+                <span class="block-icon">🌍</span>
+                <span class="block-title">BLOQUE 3: CAPAS DE LA ATMÓSFERA</span>
+            </div>
+            <div class="levels">
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 3.1:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 3.2:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 3.3:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 3.4:</span>
+                    <input type="text" class="word-input" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="page-break"></div>
+        
+        <!-- BLOQUE 4 -->
+        <div class="block">
+            <div class="block-header">
+                <span class="block-icon">🛡️</span>
+                <span class="block-title">BLOQUE 4: FUNCIONES DE LA ATMÓSFERA</span>
+            </div>
+            <div class="levels">
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 4.1:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 4.2:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 4.3:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 4.4:</span>
+                    <input type="text" class="word-input" />
+                </div>
+            </div>
+        </div>
+        
+        <!-- BLOQUE 5 -->
+        <div class="block">
+            <div class="block-header">
+                <span class="block-icon">🏭</span>
+                <span class="block-title">BLOQUE 5: CONTAMINACIÓN ATMOSFÉRICA</span>
+            </div>
+            <div class="levels">
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 5.1:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 5.2:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 5.3:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 5.4:</span>
+                    <input type="text" class="word-input" />
+                </div>
+            </div>
+        </div>
+        
+        <!-- BLOQUE 6 -->
+        <div class="block">
+            <div class="block-header">
+                <span class="block-icon">☀️</span>
+                <span class="block-title">BLOQUE 6: EFECTO INVERNADERO Y OZONO</span>
+            </div>
+            <div class="levels">
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 6.1:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 6.2:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 6.3:</span>
+                    <input type="text" class="word-input" />
+                </div>
+                <div class="level-item">
+                    <input type="checkbox" class="level-checkbox" />
+                    <span class="level-label">Nivel 6.4:</span>
+                    <input type="text" class="word-input" />
+                </div>
+            </div>
+        </div>
+        
+        <!-- FRASE FINAL -->
+        <div class="final-phrase">
+            <h3>🎯 FRASE FINAL COMPLETA</h3>
+            <div class="phrase-lines">
+                <p style="color: #6b7280; margin: 0 0 10px 0; font-size: 13px;">Copia aquí todas las palabras en orden para formar la frase secreta:</p>
+                <div class="phrase-line"></div>
+                <div class="phrase-line"></div>
+                <div class="phrase-line"></div>
+                <div class="phrase-line"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Colegio El Ave María</strong> | Biología y Geología 1º ESO | La Atmósfera</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                ⭐ <strong>Frase correcta:</strong> "LA ATMÓSFERA PROTEGE LA VIDA EN LA TIERRA GRACIAS AL OXÍGENO Y LA CAPA DE OZONO QUE DEBEMOS PROTEGER SIEMPRE PARA NUESTRO FUTURO SOSTENIBLE"
+            </p>
+        </div>
+    </div>
+</body>
+</html>

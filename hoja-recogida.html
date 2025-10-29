@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoja de Recogida - La Atmósfera</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 210mm;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #2563eb;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #1e40af;
+            margin: 10px 0;
+            font-size: 32px;
+        }
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+        .info-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .info-field label {
+            font-weight: bold;
+            color: #1e40af;
+        }
+        .info-field input {
+            flex: 1;
+            border: none;
+            border-bottom: 2px solid #2563eb;
+            background: transparent;
+            padding: 5px;
+            font-size: 16px;
+        }
+        .block {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        .block-header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background: #f8fafc;
+            border: 2px solid #2563eb;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .level-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #2563eb;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .level-name {
+            flex: 1;
+            font-size: 14px;
+            color: #334155;
+        }
+        .instructions {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .instructions h3 {
+            color: #92400e;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        .instructions li {
+            margin: 8px 0;
+            color: #78350f;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .print-button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            font-weight: bold;
+        }
+        .print-button:hover {
+            background: #1e40af;
+        }
+        .icon {
+            font-size: 24px;
+        }
+        .progress-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 8px;
+        }
+        .progress-section h3 {
+            color: #166534;
+            margin-top: 0;
+        }
+        .progress-bars {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .progress-bar {
+            text-align: center;
+        }
+        .progress-circle {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #22c55e;
+            border-radius: 50%;
+            margin: 0 auto 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #166534;
+        }
+        .progress-label {
+            font-size: 11px;
+            color: #166534;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Imprimir Hoja de Recogida</button>
+
+    <div class="header">
+        <div class="icon">🌍</div>
+        <h1>LA ATMÓSFERA - 1º ESO</h1>
+        <p style="color: #6b7280; font-size: 18px;">Hoja de Seguimiento de Progreso</p>
+    </div>
+
+    <div class="student-info">
+        <div class="info-field">
+            <label>👤 Nombre:</label>
+            <input type="text" />
+        </div>
+        <div class="info-field">
+            <label>📅 Fecha:</label>
+            <input type="text" />
+        </div>
+        <div class="info-field">
+            <label>🏫 Curso:</label>
+            <input type="text" value="1º ESO" />
+        </div>
+        <div class="info-field">
+            <label>👨‍🏫 Profesor/a:</label>
+            <input type="text" />
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>📋 Instrucciones de Uso</h3>
+        <ul>
+            <li><strong>Marca con ✓</strong> cada nivel que completes en la aplicación</li>
+            <li><strong>Estudia la teoría</strong> antes de hacer los ejercicios</li>
+            <li><strong>Completa todos los niveles</strong> de un bloque antes de pasar al siguiente</li>
+            <li><strong>Repasa</strong> los niveles donde tuviste dificultades</li>
+            <li><strong>Consulta al profesor</strong> si tienes dudas sobre algún tema</li>
+        </ul>
+    </div>
+
+    <!-- BLOQUE 1 -->
+    <div class="block">
+        <div class="block-header">
+            <span class="icon">🌋</span>
+            <span>BLOQUE 1: ORIGEN DE LA ATMÓSFERA</span>
+        </div>
+        <div class="levels-grid">
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 1.1</strong><br>
+                    Primera etapa - Origen volcánico
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 1.2</strong><br>
+                    Segunda etapa - Formación océanos
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 1.3</strong><br>
+                    Tercera etapa - Aparición oxígeno
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 1.4</strong><br>
+                    Cuarta etapa - Atmósfera actual
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOQUE 2 -->
+    <div class="block">
+        <div class="block-header">
+            <span class="icon">💨</span>
+            <span>BLOQUE 2: COMPOSICIÓN DEL AIRE</span>
+        </div>
+        <div class="levels-grid">
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 2.1</strong><br>
+                    Nitrógeno (78%)
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 2.2</strong><br>
+                    Oxígeno (21%)
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 2.3</strong><br>
+                    Otros gases
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 2.4</strong><br>
+                    Aire y partículas
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOQUE 3 -->
+    <div class="block">
+        <div class="block-header">
+            <span class="icon">🌍</span>
+            <span>BLOQUE 3: CAPAS DE LA ATMÓSFERA</span>
+        </div>
+        <div class="levels-grid">
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 3.1</strong><br>
+                    Troposfera
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 3.2</strong><br>
+                    Estratosfera
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 3.3</strong><br>
+                    Mesosfera
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 3.4</strong><br>
+                    Termosfera y Exosfera
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOQUE 4 -->
+    <div class="block">
+        <div class="block-header">
+            <span class="icon">🛡️</span>
+            <span>BLOQUE 4: FUNCIONES DE LA ATMÓSFERA</span>
+        </div>
+        <div class="levels-grid">
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 4.1</strong><br>
+                    Efecto invernadero
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 4.2</strong><br>
+                    Capa de ozono
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 4.3</strong><br>
+                    Protección meteoritos
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 4.4</strong><br>
+                    Fenómenos meteorológicos
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOQUE 5 -->
+    <div class="block">
+        <div class="block-header">
+            <span class="icon">🏭</span>
+            <span>BLOQUE 5: CONTAMINACIÓN ATMOSFÉRICA</span>
+        </div>
+        <div class="levels-grid">
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 5.1</strong><br>
+                    Tipos de contaminantes
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 5.2</strong><br>
+                    Lluvia ácida
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 5.3</strong><br>
+                    Calentamiento global
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="checkbox"></div>
+                <div class="level-name">
+                    <strong>Nivel 5.4</strong><br>
+                    Agujero de ozono
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-section">
+        <h3>📊 Resumen de Progreso</h3>
+        <div class="progress-bars">
+            <div class="progress-bar">
+                <div class="progress-circle">__ / 4</div>
+                <div class="progress-label">Bloque 1</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-circle">__ / 4</div>
+                <div class="progress-label">Bloque 2</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-circle">__ / 4</div>
+                <div class="progress-label">Bloque 3</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-circle">__ / 4</div>
+                <div class="progress-label">Bloque 4</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-circle">__ / 4</div>
+                <div class="progress-label">Bloque 5</div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px; font-weight: bold; color: #166534; font-size: 18px;">
+            TOTAL: _____ / 20 niveles completados
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>📚 Biología y Geología - 1º ESO</strong></p>
+        <p>Colegio El Ave María | Curso 2024-2025</p>
+        <p style="margin-top: 10px;">💡 Recuerda: La constancia es la clave del éxito</p>
+    </div>
+</body>
+</html>

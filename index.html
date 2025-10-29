@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Atmósfera - 1º ESO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .theory-content { white-space: pre-line; line-height: 1.8; }
+        .theory-content strong { color: #1e40af; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const blocks = {
+            1: { title: "ORIGEN DE LA ATMÓSFERA", icon: "🌋", color: "from-orange-500 to-red-600" },
+            2: { title: "COMPOSICIÓN DEL AIRE", icon: "💨", color: "from-blue-400 to-cyan-500" },
+            3: { title: "CAPAS DE LA ATMÓSFERA", icon: "🌍", color: "from-indigo-500 to-purple-600" },
+            4: { title: "FUNCIONES DE LA ATMÓSFERA", icon: "🛡️", color: "from-green-500 to-emerald-600" },
+            5: { title: "CONTAMINACIÓN ATMOSFÉRICA", icon: "🏭", color: "from-gray-600 to-gray-800" }
+        };
+
+        const levelNames = {
+            "1": { 
+                "1.1": "Primera etapa - Origen volcánico",
+                "1.2": "Segunda etapa - Formación océanos",
+                "1.3": "Tercera etapa - Aparición oxígeno",
+                "1.4": "Cuarta etapa - Atmósfera actual"
+            },
+            "2": { 
+                "2.1": "Nitrógeno (78%)",
+                "2.2": "Oxígeno (21%)",
+                "2.3": "Otros gases",
+                "2.4": "Aire y partículas"
+            },
+            "3": { 
+                "3.1": "Troposfera",
+                "3.2": "Estratosfera",
+                "3.3": "Mesosfera",
+                "3.4": "Termosfera y Exosfera"
+            },
+            "4": { 
+                "4.1": "Efecto invernadero",
+                "4.2": "Capa de ozono",
+                "4.3": "Protección meteoritos",
+                "4.4": "Fenómenos meteorológicos"
+            },
+            "5": { 
+                "5.1": "Tipos de contaminantes",
+                "5.2": "Lluvia ácida",
+                "5.3": "Calentamiento global",
+                "5.4": "Agujero de ozono"
+            }
+        };
+
+        const theoryContent = {
+            "1-1.1": {
+                title: "PRIMERA ETAPA - Origen Volcánico",
+                content: `**Hace 4.400 millones de años** se originó la atmósfera terrestre.
+
+**¿Cómo se formó?**
+- Los gases escaparon del interior de la Tierra (masa de roca fundida)
+- La Tierra se enfrió y se liberaron gases volcánicos
+- Gases principales: dióxido de carbono (CO₂), monóxido de carbono (CO), vapor de agua (H₂O)
+
+**Característica importante:**
+Esta atmósfera primitiva NO tenía oxígeno, por lo que era irrespirable para los seres vivos actuales.`
+            },
+            "1-1.2": {
+                title: "SEGUNDA ETAPA - Formación de Océanos",
+                content: `**El vapor de agua se condensa**
+
+Cuando la Tierra se enfrió lo suficiente:
+- El vapor de agua comenzó a condensarse
+- Empezó a precipitar en forma de lluvias torrenciales
+- Estas lluvias duraron millones de años
+- Se formaron los mares y océanos (la hidrosfera)
+
+**Resultado:** Gran parte del CO₂ se disolvió en el agua de los océanos.`
+            },
+            "1-1.3": {
+                title: "TERCERA ETAPA - Aparición del Oxígeno",
+                content: `**Hace 3.500 millones de años**
+
+Aparecieron las primeras **cianobacterias** (bacterias fotosintéticas):
+- Realizaban la fotosíntesis
+- Liberaban oxígeno (O₂) a la atmósfera
+- Gradualmente el oxígeno se fue acumulando
+
+**Con la aparición de plantas y algas**, este proceso se aceleró enormemente.
+
+**Importancia:** Por primera vez había oxígeno en la atmósfera.`
+            },
+            "1-1.4": {
+                title: "CUARTA ETAPA - Atmósfera Actual",
+                content: `**Finalmente pudieron aparecer los animales**
+
+Con suficiente oxígeno en la atmósfera:
+- Los animales pudieron respirar
+- Desde entonces la atmósfera ha mantenido una composición prácticamente constante
+
+**Composición actual:**
+- Nitrógeno (N₂): 78%
+- Oxígeno (O₂): 21%
+- Otros gases: 1% (CO₂, argón, vapor de agua, ozono)`
+            },
+            "2-2.1": {
+                title: "NITRÓGENO (N₂) - 78%",
+                content: `**El gas más abundante de la atmósfera**
+
+**Características:**
+- Representa el 78% del aire
+- Es un gas inerte (poco reactivo)
+- Símbolo: N₂
+
+**Funciones:**
+- Las plantas lo necesitan para formar proteínas
+- Lo obtienen del suelo en forma de nitratos
+- Es esencial para la vida aunque no lo respiramos directamente`
+            },
+            "2-2.2": {
+                title: "OXÍGENO (O₂) - 21%",
+                content: `**El gas esencial para la respiración**
+
+**Características:**
+- Representa el 21% del aire
+- Es muy reactivo
+- Símbolo: O₂
+
+**Funciones:**
+- Necesario para la respiración de animales
+- Permite las combustiones
+- Se produce por la fotosíntesis de plantas y algas
+
+**Importancia:** Sin oxígeno no sería posible la vida animal en la Tierra.`
+            },
+            "2-2.3": {
+                title: "OTROS GASES - 1%",
+                content: `**Gases minoritarios pero importantes**
+
+**Argón (0,9%)**
+- Gas noble, inerte
+
+**Dióxido de carbono - CO₂ (0,04%)**
+- Usado por las plantas en la fotosíntesis
+- Gas de efecto invernadero
+
+**Vapor de agua (cantidad variable)**
+- Forma las nubes al condensarse
+- Importante para el ciclo del agua
+
+**Ozono (O₃)**
+- En la estratosfera
+- Filtra rayos ultravioleta`
+            },
+            "2-2.4": {
+                title: "AIRE Y PARTÍCULAS EN SUSPENSIÓN",
+                content: `**¿Qué es el aire?**
+El aire es la mezcla de gases que respiramos (N₂ + O₂ + otros gases).
+
+**Partículas en suspensión:**
+- Polvo
+- Polen
+- Humo
+- Cenizas volcánicas
+- Cristales de sal marina
+
+**Características del aire:**
+- Tiene masa y peso
+- Es transparente e inodoro
+- Puede moverse (viento)
+
+**La atmósfera NO es homogénea:** tiene distintas capas con diferentes características.`
+            },
+            "3-3.1": {
+                title: "TROPOSFERA",
+                content: `**La capa más cercana a la Tierra**
+
+**Características:**
+- Altura: Desde la superficie hasta 12 km
+- Temperatura: Disminuye con la altura (hasta -70°C en el límite superior)
+- Contiene el 80% de los gases de la atmósfera
+
+**Funciones:**
+- Aquí ocurren todos los fenómenos meteorológicos: lluvias, tormentas, tornados
+- Es crucial para la vida en la Tierra
+- Única capa en contacto directo con la superficie
+
+**Curiosidades:**
+- Los aviones comerciales vuelan en la parte alta de la troposfera para evitar turbulencias`
+            },
+            "3-3.2": {
+                title: "ESTRATOSFERA",
+                content: `**La capa del ozono**
+
+**Características:**
+- Altura: Entre 12 y 50 km
+- Temperatura: Aumenta con la altitud (hasta 0°C)
+- El aumento se debe a la absorción de radiación ultravioleta
+
+**Funciones:**
+- Alberga la **capa de ozono**
+- Bloquea los dañinos rayos ultravioleta del Sol
+
+**Curiosidades:**
+- Los aviones espía U-2 vuelan aquí
+- Los saltos estratosféricos en paracaídas ocurren en esta capa
+- Aquí se encuentran los globos meteorológicos`
+            },
+            "3-3.3": {
+                title: "MESOSFERA",
+                content: `**La capa más fría**
+
+**Características:**
+- Altura: Entre 50 y 80 km
+- Temperatura: La más fría de la atmósfera (hasta -100°C)
+
+**Funciones:**
+- Actúa como escudo protector
+- Desintegra la mayoría de los meteoritos
+- Da lugar a las estrellas fugaces
+
+**Curiosidades:**
+- Es la capa menos estudiada
+- No hay globos ni aviones que puedan llegar
+- Conocida como el "cementerio de meteoritos"`
+            },
+            "3-3.4": {
+                title: "TERMOSFERA Y EXOSFERA",
+                content: `**TERMOSFERA (80-500 km)**
+
+**Características:**
+- Temperaturas extremadamente altas (>1.500°C)
+- Calentamiento por rayos solares
+- Se producen las auroras boreales
+
+**Funciones:**
+- Orbitan la mayoría de satélites artificiales
+- Incluye la Estación Espacial Internacional
+
+---
+
+**EXOSFERA (600-10.000 km)**
+
+**Características:**
+- La capa más externa
+- Composición igual al espacio interplanetario
+
+**Funciones:**
+- Zona de transición atmósfera-espacio exterior
+- Satélites geoestacionarios`
+            },
+            "4-4.1": {
+                title: "EFECTO INVERNADERO",
+                content: `**Un fenómeno natural necesario**
+
+**¿Qué es?**
+Algunos gases (CO₂, vapor de agua) retienen el calor del Sol, manteniendo la Tierra caliente.
+
+**¿Por qué es importante?**
+- Sin efecto invernadero: -18°C (vida imposible)
+- Con efecto invernadero: +15°C (temperatura media actual)
+
+**El problema:**
+El exceso de CO₂ por actividades humanas aumenta demasiado la temperatura (calentamiento global).
+
+**Causas del exceso:**
+- Quema de combustibles fósiles (petróleo, carbón, gas)
+- Deforestación
+- Industrias contaminantes`
+            },
+            "4-4.2": {
+                title: "CAPA DE OZONO",
+                content: `**El escudo protector**
+
+**¿Qué es?**
+Capa de ozono (O₃) en la estratosfera que filtra los rayos ultravioleta del Sol.
+
+**Funciones:**
+- Bloquea el 99% de los rayos UV
+- Protege a los seres vivos
+
+**Daños que causan los rayos UV:**
+- Cáncer de piel
+- Quemaduras solares
+- Daño ocular (cataratas)
+- Daño al ADN
+
+**Amenaza:**
+Los CFC (clorofluorocarbonos) de aerosoles y refrigeradores antiguos destruyen el ozono.
+
+**Agujero de ozono:** Principalmente sobre la Antártida.`
+            },
+            "4-4.3": {
+                title: "PROTECCIÓN CONTRA METEORITOS",
+                content: `**La atmósfera como escudo**
+
+**¿Cómo protege?**
+- Los meteoritos entran a gran velocidad
+- La fricción con el aire los calienta
+- Se desintegran en la mesosfera
+- Los vemos como "estrellas fugaces"
+
+**Resultado:**
+La mayoría de meteoritos NO llegan al suelo.
+
+**Sin atmósfera:**
+Como en la Luna, todos los meteoritos impactarían la superficie creando cráteres.
+
+**Importancia:**
+Protege la vida en la Tierra de impactos constantes desde el espacio.`
+            },
+            "4-4.4": {
+                title: "FENÓMENOS METEOROLÓGICOS",
+                content: `**La atmósfera regula el clima**
+
+**Funciones:**
+- **Ciclo del agua:** Evaporación → nubes → lluvia
+- **Viento:** Movimiento del aire
+- **Tormentas:** Descargas eléctricas
+- **Temperatura:** Regula el calor
+
+**Importancia del agua:**
+- Las lluvias traen agua dulce
+- Necesaria para la vida
+- Rellena ríos, lagos y acuíferos
+
+**Fenómenos:**
+- Lluvia, nieve, granizo
+- Tornados y huracanes
+- Arcoíris
+- Relámpagos`
+            },
+            "5-5.1": {
+                title: "TIPOS DE CONTAMINANTES",
+                content: `**¿Qué es la contaminación atmosférica?**
+Presencia de sustancias o energía que causan efectos nocivos para los seres vivos.
+
+**Principales contaminantes:**
+
+**1. Gases:**
+- CO₂ (dióxido de carbono)
+- SO₂ (óxido de azufre)
+- NOₓ (óxidos de nitrógeno)
+- CFCs (clorofluorocarbonos)
+
+**2. Partículas sólidas:**
+- Humo
+- Hollín
+- Polvo industrial
+
+**3. Ruido:**
+- Contaminación acústica`
+            },
+            "5-5.2": {
+                title: "LLUVIA ÁCIDA",
+                content: `**¿Qué es?**
+Lluvia con pH bajo (ácido) causada por contaminantes.
+
+**Causas:**
+- SO₂ y NOₓ de fábricas y vehículos
+- Se combinan con agua en la atmósfera
+- Forman ácido sulfúrico y ácido nítrico
+
+**Efectos:**
+- Daña bosques y cultivos
+- Acidifica lagos y ríos (mata peces)
+- Corroe edificios y estatuas
+- Daña la salud humana
+
+**Solución:**
+Reducir emisiones de SO₂ y NOₓ usando filtros en industrias y vehículos menos contaminantes.`
+            },
+            "5-5.3": {
+                title: "CALENTAMIENTO GLOBAL",
+                content: `**Aumento de la temperatura media del planeta**
+
+**Causa:**
+Exceso de gases de efecto invernadero (principalmente CO₂) por actividades humanas.
+
+**Consecuencias:**
+- Deshielo de polos y glaciares
+- Aumento del nivel del mar
+- Cambios en el clima
+- Sequías e inundaciones
+- Extinción de especies
+
+**Soluciones:**
+- Energías renovables (solar, eólica)
+- Reducir uso de combustibles fósiles
+- Reforestación
+- Transporte sostenible`
+            },
+            "5-5.4": {
+                title: "AGUJERO DE OZONO",
+                content: `**Reducción de la capa de ozono**
+
+**Causa:**
+Los CFCs (en aerosoles, refrigeradores antiguos) destruyen las moléculas de ozono.
+
+**Ubicación:**
+Principalmente sobre la Antártida (polo sur).
+
+**Consecuencias:**
+- Más rayos UV llegan a la Tierra
+- Aumento de cáncer de piel
+- Daño a ecosistemas
+
+**Solución:**
+- Protocolo de Montreal (1987)
+- Prohibición de CFCs
+- Uso de gases alternativos
+
+**Buenas noticias:**
+El agujero se está recuperando lentamente.`
+            }
+        };
+
+        const exerciseData = {
+            "1-1.1": [
+                { q: "¿Hace cuántos millones de años se originó la atmósfera?", a: "4400", sol: "4.400 millones de años" },
+                { q: "¿De dónde salieron los gases?", a: "interior tierra volcanes", sol: "Del interior de la Tierra (volcanes)" },
+                { q: "¿Había oxígeno en la atmósfera primitiva? (sí/no)", a: "no", sol: "NO había oxígeno" },
+                { q: "¿Qué gas abundaba?", a: "dioxido carbono co2", sol: "Dióxido de carbono (CO₂)" }
+            ],
+            "1-1.2": [
+                { q: "¿Qué ocurrió cuando la Tierra se enfrió?", a: "vapor agua condenso lluvia", sol: "El vapor de agua se condensó y llovió" },
+                { q: "¿Qué se formó con las lluvias?", a: "oceanos mares hidrosfera", sol: "Los océanos y mares (hidrosfera)" },
+                { q: "¿Dónde se disolvió parte del CO₂?", a: "agua oceanos mares", sol: "En el agua de los océanos" }
+            ],
+            "1-1.3": [
+                { q: "¿Hace cuántos millones de años aparecieron las primeras bacterias fotosintéticas?", a: "3500", sol: "3.500 millones de años" },
+                { q: "¿Cómo se llaman esas bacterias?", a: "cianobacterias", sol: "Cianobacterias" },
+                { q: "¿Qué gas producían?", a: "oxigeno o2", sol: "Oxígeno (O₂)" },
+                { q: "¿Qué seres vivos también producen oxígeno?", a: "plantas algas", sol: "Plantas y algas" }
+            ],
+            "1-1.4": [
+                { q: "¿Qué porcentaje de nitrógeno tiene el aire actual?", a: "78", sol: "78%" },
+                { q: "¿Qué porcentaje de oxígeno?", a: "21", sol: "21%" },
+                { q: "¿Qué porcentaje representan los demás gases?", a: "1", sol: "1%" },
+                { q: "¿Por qué pudieron aparecer los animales?", a: "oxigeno respirar", sol: "Porque había oxígeno para respirar" }
+            ],
+            "2-2.1": [
+                { q: "¿Qué porcentaje del aire es nitrógeno?", a: "78", sol: "78%" },
+                { q: "¿Cuál es su símbolo químico?", a: "n2", sol: "N₂" },
+                { q: "¿Es reactivo o inerte?", a: "inerte", sol: "Inerte (poco reactivo)" },
+                { q: "¿Para qué lo necesitan las plantas?", a: "proteinas", sol: "Para formar proteínas" }
+            ],
+            "2-2.2": [
+                { q: "¿Qué porcentaje del aire es oxígeno?", a: "21", sol: "21%" },
+                { q: "¿Cuál es su símbolo químico?", a: "o2", sol: "O₂" },
+                { q: "¿Para qué lo usamos?", a: "respirar", sol: "Para respirar" },
+                { q: "¿Qué proceso lo produce?", a: "fotosintesis", sol: "La fotosíntesis" }
+            ],
+            "2-2.3": [
+                { q: "¿Qué gas noble hay en el aire?", a: "argon", sol: "Argón" },
+                { q: "¿Qué porcentaje de CO₂ hay?", a: "0.04", sol: "0,04%" },
+                { q: "¿Para qué usan las plantas el CO₂?", a: "fotosintesis", sol: "Para la fotosíntesis" },
+                { q: "¿Qué forma el vapor de agua al condensarse?", a: "nubes", sol: "Las nubes" }
+            ],
+            "2-2.4": [
+                { q: "¿Cómo se llama la mezcla de gases que respiramos?", a: "aire", sol: "Aire" },
+                { q: "¿El aire tiene masa? (sí/no)", a: "si", sol: "Sí" },
+                { q: "¿La atmósfera es homogénea? (sí/no)", a: "no", sol: "NO, tiene distintas capas" },
+                { q: "Nombra 2 partículas en suspensión", a: "polvo polen humo", sol: "Polvo, polen, humo, cenizas..." }
+            ],
+            "3-3.1": [
+                { q: "¿Hasta qué altura llega la troposfera?", a: "12", sol: "12 km" },
+                { q: "¿Qué porcentaje del aire contiene?", a: "80", sol: "80%" },
+                { q: "¿La temperatura aumenta o disminuye con la altura?", a: "disminuye", sol: "Disminuye" },
+                { q: "¿Qué ocurre en esta capa?", a: "fenomenos meteorologicos lluvia", sol: "Fenómenos meteorológicos (lluvia, tormentas...)" },
+                { q: "¿Dónde vuelan los aviones comerciales?", a: "troposfera", sol: "En la troposfera" }
+            ],
+            "3-3.2": [
+                { q: "¿Entre qué alturas está la estratosfera?", a: "12 50", sol: "Entre 12 y 50 km" },
+                { q: "¿La temperatura aumenta o disminuye?", a: "aumenta", sol: "Aumenta con la altura" },
+                { q: "¿Qué capa importante hay aquí?", a: "ozono", sol: "La capa de ozono" },
+                { q: "¿Qué radiación bloquea el ozono?", a: "ultravioleta uv", sol: "Radiación ultravioleta (UV)" },
+                { q: "¿Hasta qué temperatura puede llegar?", a: "0", sol: "0°C" }
+            ],
+            "3-3.3": [
+                { q: "¿Entre qué alturas está la mesosfera?", a: "50 80", sol: "Entre 50 y 80 km" },
+                { q: "¿Es la capa más fría o más caliente?", a: "fria", sol: "La más fría" },
+                { q: "¿Qué temperatura mínima alcanza?", a: "-100", sol: "-100°C" },
+                { q: "¿Qué se desintegra aquí?", a: "meteoritos", sol: "Los meteoritos" },
+                { q: "¿Cómo se llaman las 'estrellas fugaces'?", a: "meteoritos", sol: "Meteoritos que se desintegran" }
+            ],
+            "3-3.4": [
+                { q: "¿Entre qué alturas está la termosfera?", a: "80 500", sol: "Entre 80 y 500 km" },
+                { q: "¿Qué temperatura puede alcanzar?", a: "1500", sol: "Más de 1.500°C" },
+                { q: "¿Qué fenómeno luminoso ocurre aquí?", a: "auroras boreales", sol: "Auroras boreales" },
+                { q: "¿Cuál es la capa más externa?", a: "exosfera", sol: "La exosfera" },
+                { q: "¿Dónde están los satélites geoestacionarios?", a: "exosfera", sol: "En la exosfera" }
+            ],
+            "4-4.1": [
+                { q: "¿Qué gases causan el efecto invernadero?", a: "co2 vapor agua", sol: "CO₂ y vapor de agua" },
+                { q: "¿Es necesario el efecto invernadero? (sí/no)", a: "si", sol: "Sí, mantiene la temperatura" },
+                { q: "¿Qué temperatura habría sin él?", a: "-18", sol: "-18°C" },
+                { q: "¿Qué causa el exceso de CO₂?", a: "combustibles fosiles", sol: "Quema de combustibles fósiles" }
+            ],
+            "4-4.2": [
+                { q: "¿En qué capa está la capa de ozono?", a: "estratosfera", sol: "En la estratosfera" },
+                { q: "¿Qué radiación filtra?", a: "ultravioleta uv", sol: "Rayos ultravioleta (UV)" },
+                { q: "Nombra un daño que causan los rayos UV", a: "cancer piel quemaduras", sol: "Cáncer de piel, quemaduras..." },
+                { q: "¿Qué sustancias dañan el ozono?", a: "cfc", sol: "Los CFC (clorofluorocarbonos)" }
+            ],
+            "4-4.3": [
+                { q: "¿En qué capa se desintegran los meteoritos?", a: "mesosfera", sol: "En la mesosfera" },
+                { q: "¿Por qué se desintegran?", a: "friccion aire calor", sol: "Por la fricción con el aire" },
+                { q: "¿Cómo los vemos desde la Tierra?", a: "estrellas fugaces", sol: "Como estrellas fugaces" },
+                { q: "¿Todos llegan al suelo? (sí/no)", a: "no", sol: "NO, la mayoría se desintegran" }
+            ],
+            "4-4.4": [
+                { q: "¿Dónde ocurren las lluvias y tormentas?", a: "troposfera", sol: "En la troposfera" },
+                { q: "Nombra 3 fenómenos meteorológicos", a: "lluvia viento tormenta", sol: "Lluvia, viento, tormenta, nieve..." },
+                { q: "¿Para qué es necesaria el agua de lluvia?", a: "vida dulce rios", sol: "Para la vida, ríos, lagos..." },
+                { q: "¿Qué ciclo implica evaporación y lluvia?", a: "agua", sol: "El ciclo del agua" }
+            ],
+            "5-5.1": [
+                { q: "¿Qué es la contaminación atmosférica?", a: "sustancias nocivas", sol: "Presencia de sustancias nocivas" },
+                { q: "Nombra 2 gases contaminantes", a: "co2 so2 nox cfc", sol: "CO₂, SO₂, NOₓ, CFCs..." },
+                { q: "¿Las partículas sólidas contaminan? (sí/no)", a: "si", sol: "Sí (humo, hollín, polvo...)" },
+                { q: "¿El ruido es contaminación? (sí/no)", a: "si", sol: "Sí, contaminación acústica" }
+            ],
+            "5-5.2": [
+                { q: "¿Qué es la lluvia ácida?", a: "lluvia acida ph bajo", sol: "Lluvia con pH bajo (ácida)" },
+                { q: "¿Qué gases la causan?", a: "so2 nox", sol: "SO₂ y NOₓ" },
+                { q: "¿De dónde vienen esos gases?", a: "fabricas vehiculos industria", sol: "Fábricas y vehículos" },
+                { q: "Nombra un efecto de la lluvia ácida", a: "daña bosques rios corroe", sol: "Daña bosques, ríos, edificios..." }
+            ],
+            "5-5.3": [
+                { q: "¿Qué es el calentamiento global?", a: "aumento temperatura", sol: "Aumento de la temperatura del planeta" },
+                { q: "¿Qué gas lo causa principalmente?", a: "co2", sol: "CO₂ (dióxido de carbono)" },
+                { q: "Nombra una consecuencia", a: "deshielo nivel mar cambio clima", sol: "Deshielo, subida del nivel del mar, cambios climáticos..." },
+                { q: "¿Qué energías ayudan a reducirlo?", a: "renovables solar eolica", sol: "Energías renovables (solar, eólica...)" }
+            ],
+            "5-5.4": [
+                { q: "¿Qué es el agujero de ozono?", a: "reduccion ozono", sol: "Reducción de la capa de ozono" },
+                { q: "¿Qué sustancias lo causan?", a: "cfc", sol: "Los CFCs" },
+                { q: "¿Dónde está principalmente?", a: "antartida polo sur", sol: "Sobre la Antártida" },
+                { q: "¿Qué acuerdo lo prohibió?", a: "montreal", sol: "Protocolo de Montreal (1987)" },
+                { q: "¿Se está recuperando? (sí/no)", a: "si", sol: "Sí, lentamente" }
+            ]
+        };
+
+        let state = {
+            selectedBlock: null,
+            selectedLevel: null,
+            showTheory: true,
+            answers: {},
+            showResults: {},
+            studentName: localStorage.getItem('studentName') || '',
+            showNameModal: !localStorage.getItem('studentName')
+        };
+
+        function saveState() {
+            localStorage.setItem('studentName', state.studentName);
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            let html = '';
+
+            if (state.showNameModal && !state.studentName) {
+                html += `<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">¡Bienvenido/a!</h2>
+                        <p class="text-gray-600 mb-6">Por favor, introduce tu nombre para comenzar:</p>
+                        <input type="text" id="nameInput" placeholder="Tu nombre completo" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none mb-4">
+                        <button onclick="setName()" class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition font-medium">
+                            Comenzar
+                        </button>
+                    </div>
+                </div>`;
+            }
+
+            html += `<div class="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100 p-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-2xl p-8 mb-8 text-white relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="bg-white p-4 rounded-xl">
+                                    <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                </div>
+                                <div>
+                                    <h1 class="text-4xl font-bold mb-2">La Atmósfera</h1>
+                                    <p class="text-blue-100 text-lg">Biología y Geología - 1º ESO 🌍</p>
+                                    ${state.studentName ? `<p class="text-blue-200 text-sm mt-1">👤 ${state.studentName}</p>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex gap-4 mt-6 flex-wrap">
+                                <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur">
+                                    <span class="font-semibold">🎯 5 Bloques Temáticos</span>
+                                </div>
+                                <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur">
+                                    <span class="font-semibold">📚 20 Niveles</span>
+                                </div>
+                                <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur">
+                                    <span class="font-semibold">📖 Teoría + Práctica</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ${!state.selectedBlock ? renderBlockSelection() : (!state.selectedLevel ? renderLevelSelection() : (state.showTheory ? renderTheory() : renderExercises()))}
+                </div>
+            </div>`;
+
+            app.innerHTML = html;
+        }
+
+        function renderBlockSelection() {
+            return `<div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span class="text-3xl">🏆</span> Selecciona un Bloque Temático
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${Object.entries(blocks).map(([id, block]) => `
+                        <div onclick="selectBlock('${id}')" class="bg-gradient-to-br ${block.color} rounded-2xl shadow-xl p-6 cursor-pointer transform transition-all hover:scale-105 text-white">
+                            <div class="text-5xl mb-4">${block.icon}</div>
+                            <h3 class="font-bold text-xl mb-3">${block.title}</h3>
+                            <div class="flex items-center text-white font-medium">
+                                Comenzar <span class="ml-2">→</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+        }
+
+        function renderLevelSelection() {
+            const block = blocks[state.selectedBlock];
+            return `<div>
+                <button onclick="backToBlocks()" class="mb-6 px-6 py-3 bg-white rounded-xl hover:bg-gray-50 transition shadow-lg flex items-center gap-2">
+                    <span>←</span> Volver a Bloques
+                </button>
+                
+                <div class="bg-gradient-to-r ${block.color} rounded-2xl shadow-xl p-8 mb-8 text-white">
+                    <h2 class="text-3xl font-bold">${block.title}</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    ${Object.entries(levelNames[state.selectedBlock] || {}).map(([levelId, levelName]) => `
+                        <div onclick="selectLevel('${levelId}')" class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-2xl transition-all">
+                            <span class="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                                Nivel ${levelId}
+                            </span>
+                            <h3 class="font-bold text-xl text-gray-800 mt-3">${levelName}</h3>
+                            <div class="flex items-center text-blue-600 font-medium mt-3">
+                                <span class="mr-2">📖</span> Leer teoría
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+        }
+
+        function renderTheory() {
+            const levelKey = `${state.selectedBlock}-${state.selectedLevel}`;
+            const theory = theoryContent[levelKey];
+            
+            return `<div>
+                <div class="flex gap-2 mb-6">
+                    <button onclick="backToLevels()" class="px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50 transition">
+                        <span>←</span> Niveles
+                    </button>
+                    <button onclick="backToBlocks()" class="px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50 transition">
+                        <span>🏠</span> Inicio
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        <h2 class="text-3xl font-bold text-blue-900">${theory.title}</h2>
+                    </div>
+                    
+                    <div class="theory-content text-gray-700 text-lg leading-relaxed">${theory.content}</div>
+
+                    <button onclick="showExercises()" class="mt-8 w-full px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition font-bold text-lg shadow-lg">
+                        ✅ He leído la teoría - Hacer Ejercicios
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function renderExercises() {
+            const levelKey = `${state.selectedBlock}-${state.selectedLevel}`;
+            const exercises = exerciseData[levelKey] || [];
+            
+            return `<div>
+                <div class="flex gap-2 mb-6 flex-wrap">
+                    <button onclick="showTheoryAgain()" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg shadow hover:bg-blue-200 transition">
+                        <span class="mr-2">📖</span> Ver Teoría
+                    </button>
+                    <button onclick="backToLevels()" class="px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50 transition">
+                        <span>←</span> Niveles
+                    </button>
+                    <button onclick="backToBlocks()" class="px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50 transition">
+                        <span>🏠</span> Inicio
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-indigo-900">
+                        Ejercicios - Nivel ${state.selectedLevel}: ${levelNames[state.selectedBlock]?.[state.selectedLevel]}
+                    </h2>
+                    <p class="text-gray-600 mt-2">Responde las preguntas sobre la teoría que acabas de leer</p>
+                </div>
+
+                <div class="space-y-6">
+                    ${exercises.map((ex, idx) => {
+                        const key = `${levelKey}-${idx}`;
+                        const result = state.showResults[key];
+                        return `
+                            <div class="bg-white border-2 rounded-xl p-6">
+                                <div class="flex items-start gap-4">
+                                    <span class="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full font-bold">
+                                        #${idx + 1}
+                                    </span>
+                                    <div class="flex-1">
+                                        <div class="text-xl font-medium mb-4">${ex.q}</div>
+                                        <div class="flex gap-2">
+                                            <input
+                                                type="text"
+                                                id="answer-${key}"
+                                                value="${state.answers[key] || ''}"
+                                                oninput="updateAnswer('${key}', this.value)"
+                                                placeholder="Tu respuesta"
+                                                class="flex-1 px-4 py-3 border-2 rounded-lg focus:border-indigo-500 outline-none"
+                                            />
+                                            <button onclick="checkAnswer('${key}', '${ex.a}')" class="px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                                                Comprobar
+                                            </button>
+                                        </div>
+
+                                        ${result !== undefined ? `
+                                            <div class="mt-4 p-4 rounded-lg ${result ? 'bg-green-50 border-2 border-green-300' : 'bg-red-50 border-2 border-red-300'}">
+                                                <div class="flex items-center gap-2">
+                                                    ${result ? `
+                                                        <span class="text-2xl">✅</span>
+                                                        <span class="font-bold text-green-800">¡Correcto! 🎉</span>
+                                                    ` : `
+                                                        <span class="text-2xl">❌</span>
+                                                        <span class="font-bold text-red-800">Incorrecto</span>
+                                                    `}
+                                                </div>
+                                                <div class="text-gray-700 mt-2">
+                                                    <strong>Solución:</strong> ${ex.sol}
+                                                </div>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>`;
+        }
+
+        function setName() {
+            const input = document.getElementById('nameInput');
+            if (input && input.value.trim()) {
+                state.studentName = input.value.trim();
+                state.showNameModal = false;
+                saveState();
+                render();
+            }
+        }
+
+        function selectBlock(id) {
+            state.selectedBlock = id;
+            state.selectedLevel = null;
+            state.showTheory = true;
+            render();
+        }
+
+        function selectLevel(id) {
+            state.selectedLevel = id;
+            state.showTheory = true;
+            render();
+        }
+
+        function backToBlocks() {
+            state.selectedBlock = null;
+            state.selectedLevel = null;
+            render();
+        }
+
+        function backToLevels() {
+            state.selectedLevel = null;
+            render();
+        }
+
+        function showExercises() {
+            state.showTheory = false;
+            render();
+        }
+
+        function showTheoryAgain() {
+            state.showTheory = true;
+            render();
+        }
+
+        function updateAnswer(key, value) {
+            state.answers[key] = value;
+        }
+
+        function checkAnswer(key, correct) {
+            const userAnswer = (state.answers[key] || '').trim().toLowerCase().replace(/\s+/g, ' ');
+            const correctAnswers = correct.toLowerCase().split(' ');
+            const isCorrect = correctAnswers.some(ans => userAnswer.includes(ans.replace(/\s/g, '')));
+            
+            state.showResults[key] = isCorrect;
+            render();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            render();
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && document.getElementById('nameInput')) {
+                    setName();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

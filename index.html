@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Atmósfera 1º ESO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-cyan-50 to-sky-100 min-h-screen">
+    <div id="app"></div>
+
+    <script>
+        const state = {
+            currentView: 'blocks', // 'blocks', 'levels', 'content'
+            selectedBlock: null,
+            selectedLevel: null,
+            completedLevels: JSON.parse(localStorage.getItem('atmosfera-progress') || '{}'),
+            studentName: localStorage.getItem('atmosfera-student-name') || ''
+        };
+
+        const blocks = {
+            1: { 
+                title: "ORIGEN DE LA ATMÓSFERA", 
+                icon: "🌋", 
+                color: "from-orange-500 to-red-500",
+                levels: {
+                    "1.1": "Primera etapa - Atmósfera primitiva",
+                    "1.2": "Segunda etapa - Formación océanos",
+                    "1.3": "Tercera etapa - Aparición oxígeno",
+                    "1.4": "Cuarta etapa - Atmósfera actual"
+                }
+            },
+            2: { 
+                title: "COMPOSICIÓN DEL AIRE", 
+                icon: "💨", 
+                color: "from-blue-500 to-cyan-500",
+                levels: {
+                    "2.1": "Nitrógeno (78%)",
+                    "2.2": "Oxígeno (21%)",
+                    "2.3": "Otros gases",
+                    "2.4": "Aire y partículas"
+                }
+            },
+            3: { 
+                title: "CAPAS DE LA ATMÓSFERA", 
+                icon: "🌍", 
+                color: "from-purple-500 to-pink-500",
+                levels: {
+                    "3.1": "Troposfera",
+                    "3.2": "Estratosfera",
+                    "3.3": "Mesosfera",
+                    "3.4": "Termosfera y Exosfera"
+                }
+            },
+            4: { 
+                title: "FUNCIONES DE LA ATMÓSFERA", 
+                icon: "🛡️", 
+                color: "from-green-500 to-emerald-500",
+                levels: {
+                    "4.1": "Efecto invernadero",
+                    "4.2": "Capa de ozono",
+                    "4.3": "Protección meteoritos",
+                    "4.4": "Fenómenos meteorológicos"
+                }
+            }
+        };
+
+        const content = {
+            "1-1.1": {
+                theory: `
+                    <h3 class="text-2xl font-bold mb-4">🌋 Primera Etapa: Atmósfera Primitiva</h3>
+                    <p class="mb-4">Hace unos <strong>4.600 millones de años</strong>, cuando se formó la Tierra, no existía atmósfera como la conocemos hoy.</p>
+                    <div class="bg-orange-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold mb-2">Características de la atmósfera primitiva:</h4>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Formada principalmente por <strong>gases volcánicos</strong></li>
+                            <li>Contenía: vapor de agua (H₂O), dióxido de carbono (CO₂), metano (CH₄), amoníaco (NH₃)</li>
+                            <li><strong>NO había oxígeno libre (O₂)</strong></li>
+                            <li>Era tóxica para la vida actual</li>
+                            <li>Temperatura muy elevada</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-gray-600">Los volcanes expulsaban gases continuamente, creando una atmósfera densa y caliente.</p>
+                `,
+                questions: [
+                    { q: "¿Hace cuántos millones de años se formó la Tierra?", a: "4600", sol: "La Tierra se formó hace 4.600 millones de años" },
+                    { q: "¿Qué tipo de gases formaban la atmósfera primitiva?", a: "volcanicos", sol: "Gases volcánicos como vapor de agua, CO₂, metano y amoníaco" },
+                    { q: "¿Había oxígeno libre en la atmósfera primitiva? (sí/no)", a: "no", sol: "NO había oxígeno libre en la atmósfera primitiva" }
+                ]
+            },
+            "1-1.2": {
+                theory: `
+                    <h3 class="text-2xl font-bold mb-4">🌊 Segunda Etapa: Formación de Océanos</h3>
+                    <p class="mb-4">Hace unos <strong>3.800 millones de años</strong>, la Tierra comenzó a enfriarse.</p>
+                    <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold mb-2">¿Qué ocurrió?</h4>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>El <strong>vapor de agua</strong> de la atmósfera se enfrió</li>
+                            <li>Se produjeron <strong>lluvias torrenciales</strong> durante millones de años</li>
+                            <li>El agua se acumuló en las depresiones formando los <strong>primeros océanos</strong></li>
+                            <li>Gran parte del CO₂ se disolvió en el agua</li>
+                            <li>La temperatura bajó considerablemente</li>
+                        </ul>
+                    </div>
+                    <p class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-400">
+                        💡 <strong>Importante:</strong> Los océanos fueron clave para que apareciera la vida.
+                    </p>
+                `,
+                questions: [
+                    { q: "¿Hace cuántos millones de años se formaron los océanos?", a: "3800", sol: "Los océanos se formaron hace 3.800 millones de años" },
+                    { q: "¿Qué gas de la atmósfera se convirtió en agua al enfriarse?", a: "vapor de agua", sol: "El vapor de agua se condensó y cayó como lluvia" },
+                    { q: "¿Dónde se disolvió gran parte del CO₂?", a: "agua", sol: "El CO₂ se disolvió en el agua de los océanos" }
+                ]
+            },
+            "1-1.3": {
+                theory: `
+                    <h3 class="text-2xl font-bold mb-4">🦠 Tercera Etapa: Aparición del Oxígeno</h3>
+                    <p class="mb-4">Hace unos <strong>2.500 millones de años</strong> aparecieron las primeras formas de vida.</p>
+                    <div class="bg-green-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold mb-2">Las cianobacterias: primeros productores de oxígeno</h4>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Aparecieron las <strong>cianobacterias</strong> (bacterias fotosintéticas)</li>
+                            <li>Realizaban la <strong>fotosíntesis</strong>: CO₂ + H₂O → O₂ + glucosa</li>
+                            <li>Comenzaron a liberar <strong>oxígeno (O₂)</strong> a la atmósfera</li>
+                            <li>El oxígeno era tóxico para muchos organismos de la época</li>
+                            <li>Lentamente el O₂ se fue acumulando</li>
+                        </ul>
+                    </div>
+                    <p class="bg-red-50 p-3 rounded border-l-4 border-red-400">
+                        ⚠️ ¡Curiosidad! El oxígeno inicialmente fue un "contaminante" mortal para los organismos anaerobios.
+                    </p>
+                `,
+                questions: [
+                    { q: "¿Qué organismos produjeron el primer oxígeno?", a: "cianobacterias", sol: "Las cianobacterias fueron las primeras en producir oxígeno" },
+                    { q: "¿Qué proceso realizaban las cianobacterias?", a: "fotosintesis", sol: "Realizaban la fotosíntesis" },
+                    { q: "¿Hace cuántos millones de años aparecieron?", a: "2500", sol: "Aparecieron hace 2.500 millones de años" }
+                ]
+            },
+            "1-1.4": {
+                theory: `
+                    <h3 class="text-2xl font-bold mb-4">🌤️ Cuarta Etapa: Atmósfera Actual</h3>
+                    <p class="mb-4">Hace unos <strong>500 millones de años</strong> la atmósfera alcanzó su composición actual.</p>
+                    <div class="bg-sky-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold mb-2">Composición actual de la atmósfera:</h4>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>78% Nitrógeno (N₂)</strong> - gas inerte</li>
+                            <li><strong>21% Oxígeno (O₂)</strong> - esencial para la respiración</li>
+                            <li><strong>1% Otros gases</strong>: Argón (0,93%), CO₂ (0,04%), vapor de agua, etc.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-bold mb-2">La capa de ozono (O₃):</h4>
+                        <p>Se formó en la <strong>estratosfera</strong> gracias al oxígeno. Protege la vida de la radiación ultravioleta del Sol.</p>
+                    </div>
+                `,
+                questions: [
+                    { q: "¿Qué porcentaje de nitrógeno tiene la atmósfera actual?", a: "78", sol: "La atmósfera tiene 78% de nitrógeno" },
+                    { q: "¿Qué porcentaje de oxígeno tiene?", a: "21", sol: "La atmósfera tiene 21% de oxígeno" },
+                    { q: "¿En qué capa se formó el ozono?", a: "estratosfera", sol: "El ozono se formó en la estratosfera" }
+                ]
+            },
+            "2-2.1": {
+                theory: `
+                    <h3 class="text-2xl font-bold mb-4">💨 Nitrógeno (N₂) - 78%</h3>
+                    <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold mb-2">Características del nitrógeno:</h4>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Es el <strong>gas más abundante</strong> de la atmósfera (78%)</li>
+                            <li>Es un gas <strong>inerte</strong> (poco reactivo)</li>
+                            <li>No se puede respirar directamente</li>
+                            <li>Es esencial para formar <strong>proteínas</strong></li>
+                            <li>Las plantas lo absorben del suelo (nitratos)</li>
+                            <li>Algunas bacterias pueden "fijar" el N₂ del aire</li>
+                        </ul>
+                    </div>
+                    <p class="bg-green-50 p-3 rounded border-l-4 border-green-400">
+                        🌱 Las leguminosas (lentejas, garbanzos) tienen bacterias en sus raíces que fijan el nitrógeno.
+                    </p>
+                `,
+                questions: [
+                    { q: "¿Qué porcentaje de nitrógeno hay en el aire?", a: "78", sol: "El nitrógeno representa el 78% del aire" },
+                    { q: "¿El nitrógeno es reactivo o inerte?", a: "inerte", sol: "El nitrógeno es un gas inerte (poco reactivo)" },
+                    { q: "¿Para qué es esencial el nitrógeno en los seres vivos?", a: "proteinas", sol: "Es esencial para formar proteínas" }
+                ]
+            },
+            "2-2.2": {
+                theory: `
+                    <h3 class="text-2xl font-bold mb-4">🫁 Oxígeno (O₂) - 21%</h3>
+                    <div class="bg-red-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold mb-2">Características del oxígeno:</h4>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Representa el <strong>21%</strong> del aire</li>
+                            <li>Es esencial para la <strong>respiración</strong></li>
+                            <li>Es muy <strong>reactivo</strong> (comburente)</li>
+                            <li>Permite la <strong>combustión</strong></li>
+                            <li>Las plantas lo producen en la fotosíntesis</li>
+                            <li>Los seres vivos lo consumen en la respiración</li>
+                        </ul>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-lg">
+                        <h4 class="font-bold mb-2">🔥 Combustión:</h4>
+                        <p>El oxígeno es necesario para que algo arda. Sin oxígeno, el fuego se apaga.</p>
+                    </div>
+                `,
+                questions: [
+                    { q: "¿Qué porcentaje de oxígeno hay en el aire?", a: "21", sol: "El oxígeno representa el 21% del aire" },
+                    { q: "¿Para qué proceso vital es esencial el oxígeno?", a: "respiracion", sol: "Es esencial para la respiración" },
+                    { q: "¿Qué proceso produce oxígeno?", a: "fotosintesis", sol: "La fotosíntesis produce oxígeno" }
+                ]
+            },
+            "3-3.1": {
+                theory: `
+                    <h3 class="text-2xl font-bold mb-4">☁️ Troposfera (0-12 km)</h3>
+                    <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold mb-2">Características:</h4>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Es la capa <strong>más baja</strong> de la atmósfera</li>
+                            <li>Altura: desde el suelo hasta <strong>12 km</strong></li>
+                            <li>Contiene el <strong>80% del aire</strong></li>
+                            <li>Aquí ocurren los <strong>fenómenos meteorológicos</strong>: lluvia, nubes, viento</li>
+                            <li>La temperatura <strong>disminuye</strong> con la altura (6,5°C cada km)</li>
+                            <li>Es donde <strong>vivimos</strong> y respiramos</li>
+                        </ul>
+                    </div>
+                    <p class="bg-yellow-50 p-3 rounded">
+                        ✈️ Los aviones comerciales vuelan en el límite superior de la troposfera.
+                    </p>
+                `,
+                questions: [
+                    { q: "¿Hasta qué altura llega la troposfera (en km)?", a: "12", sol: "La troposfera llega hasta 12 km de altura" },
+                    { q: "¿Qué fenómenos ocurren en la troposfera?", a: "meteorologicos", sol: "Los fenómenos meteorológicos ocurren en la troposfera" },
+                    { q: "¿La temperatura sube o baja con la altura?", a: "baja", sol: "La temperatura baja con la altura" }
+                ]
+            },
+            "3-3.2": {
+                theory: `
+                    <h3 class="text-2xl font-bold mb-4">🛡️ Estratosfera (12-50 km)</h3>
+                    <div class="bg-sky-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-bold mb-2">Características:</h4>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Va desde los <strong>12 km hasta los 50 km</strong></li>
+                            <li>Contiene la <strong>capa de ozono (O₃)</strong></li>
+                            <li>El ozono absorbe la radiación ultravioleta del Sol</li>
+                            <li>La temperatura <strong>aumenta</strong> con la altura</li>
+                            <li>Casi no hay nubes ni fenómenos meteorológicos</li>
+                            <li>Es muy seca y estable</li>
+                        </ul>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-bold mb-2">🌟 Capa de ozono:</h4>
+                        <p>Está entre los 20-30 km. Protege la vida en la Tierra filtrando los rayos UV peligrosos del Sol.</p>
+                    </div>
+                `,
+                questions: [
+                    { q: "¿Entre qué alturas está la estratosfera? (12-...)", a: "50", sol: "La estratosfera va de 12 a 50 km" },
+                    { q: "¿Qué capa protectora contiene?", a: "ozono", sol: "Contiene la capa de ozono" },
+                    { q: "¿La temperatura sube o baja con la altura?", a: "sube", sol: "La temperatura sube con la altura" }
+                ]
+            }
+        };
+
+        function saveProgress() {
+            localStorage.setItem('atmosfera-progress', JSON.stringify(state.completedLevels));
+            localStorage.setItem('atmosfera-student-name', state.studentName);
+        }
+
+        function selectBlock(blockId) {
+            state.selectedBlock = blockId;
+            state.currentView = 'levels';
+            render();
+        }
+
+        function selectLevel(levelId) {
+            state.selectedLevel = levelId;
+            state.currentView = 'content';
+            render();
+        }
+
+        function backToBlocks() {
+            state.currentView = 'blocks';
+            state.selectedBlock = null;
+            state.selectedLevel = null;
+            render();
+        }
+
+        function backToLevels() {
+            state.currentView = 'levels';
+            state.selectedLevel = null;
+            render();
+        }
+
+        function checkAnswer(questionIndex) {
+            const key = `${state.selectedBlock}-${state.selectedLevel}`;
+            const levelContent = content[key];
+            const question = levelContent.questions[questionIndex];
+            const input = document.getElementById(`answer-${questionIndex}`);
+            const userAnswer = input.value.trim().toLowerCase().replace(/\s/g, '');
+            const correctAnswer = question.a.toLowerCase().replace(/\s/g, '');
+            const resultDiv = document.getElementById(`result-${questionIndex}`);
+            
+            if (userAnswer === correctAnswer) {
+                resultDiv.innerHTML = `
+                    <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4 mt-2">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-2xl">✅</span>
+                            <span class="font-bold text-green-800">¡Correcto!</span>
+                        </div>
+                        <p class="text-gray-700">${question.sol}</p>
+                    </div>
+                `;
+                
+                // Marcar pregunta como completada
+                if (!state.completedLevels[key]) {
+                    state.completedLevels[key] = [];
+                }
+                if (!state.completedLevels[key].includes(questionIndex)) {
+                    state.completedLevels[key].push(questionIndex);
+                    saveProgress();
+                }
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="bg-red-50 border-2 border-red-300 rounded-lg p-4 mt-2">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-2xl">❌</span>
+                            <span class="font-bold text-red-800">Incorrecto</span>
+                        </div>
+                        <p class="text-gray-700">Inténtalo de nuevo</p>
+                    </div>
+                `;
+            }
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (state.currentView === 'blocks') {
+                app.innerHTML = `
+                    <div class="max-w-7xl mx-auto p-6">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl shadow-2xl p-8 mb-8 text-white">
+                            <h1 class="text-4xl font-bold mb-2">🌍 La Atmósfera</h1>
+                            <p class="text-xl text-blue-100">1º ESO - Biología y Geología</p>
+                        </div>
+                        
+                        <!-- Bloques -->
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">📚 Selecciona un Bloque</h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            ${Object.entries(blocks).map(([id, block]) => `
+                                <div onclick="selectBlock('${id}')" 
+                                     class="bg-gradient-to-br ${block.color} rounded-xl shadow-lg p-6 cursor-pointer transform transition hover:scale-105 text-white">
+                                    <div class="text-5xl mb-4">${block.icon}</div>
+                                    <h3 class="text-2xl font-bold mb-2">BLOQUE ${id}</h3>
+                                    <p class="text-lg">${block.title}</p>
+                                    <div class="mt-4 text-sm opacity-90">
+                                        ${Object.keys(block.levels).length} niveles disponibles
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (state.currentView === 'levels') {
+                const block = blocks[state.selectedBlock];
+                app.innerHTML = `
+                    <div class="max-w-7xl mx-auto p-6">
+                        <button onclick="backToBlocks()" 
+                                class="mb-6 px-6 py-3 bg-white rounded-xl shadow hover:bg-gray-50 transition">
+                            ← Volver a Bloques
+                        </button>
+                        
+                        <div class="bg-gradient-to-r ${block.color} rounded-2xl shadow-xl p-8 mb-8 text-white">
+                            <div class="flex items-center gap-4">
+                                <div class="text-6xl">${block.icon}</div>
+                                <div>
+                                    <h2 class="text-3xl font-bold">${block.title}</h2>
+                                    <p class="text-lg opacity-90 mt-2">Selecciona un nivel para estudiar</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            ${Object.entries(block.levels).map(([levelId, levelName]) => {
+                                const key = `${state.selectedBlock}-${levelId}`;
+                                const isCompleted = state.completedLevels[key]?.length > 0;
+                                return `
+                                    <div onclick="selectLevel('${levelId}')" 
+                                         class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-2xl transition">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <span class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                                                Nivel ${levelId}
+                                            </span>
+                                            ${isCompleted ? '<span class="text-green-600 text-2xl">✓</span>' : ''}
+                                        </div>
+                                        <h3 class="text-xl font-bold text-gray-800">${levelName}</h3>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (state.currentView === 'content') {
+                const key = `${state.selectedBlock}-${state.selectedLevel}`;
+                const levelContent = content[key];
+                const block = blocks[state.selectedBlock];
+                const levelName = block.levels[state.selectedLevel];
+                
+                if (!levelContent) {
+                    app.innerHTML = `
+                        <div class="max-w-4xl mx-auto p-6">
+                            <button onclick="backToLevels()" class="mb-6 px-6 py-3 bg-white rounded-xl shadow">
+                                ← Volver a Niveles
+                            </button>
+                            <div class="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-8 text-center">
+                                <p class="text-xl">⚠️ Contenido en desarrollo</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                app.innerHTML = `
+                    <div class="max-w-4xl mx-auto p-6">
+                        <button onclick="backToLevels()" 
+                                class="mb-6 px-6 py-3 bg-white rounded-xl shadow hover:bg-gray-50 transition">
+                            ← Volver a Niveles
+                        </button>
+                        
+                        <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
+                            <div class="text-sm text-gray-500 mb-2">Bloque ${state.selectedBlock} - Nivel ${state.selectedLevel}</div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-6">${levelName}</h2>
+                            
+                            <!-- Teoría -->
+                            <div class="prose max-w-none mb-8">
+                                ${levelContent.theory}
+                            </div>
+                            
+                            <hr class="my-8">
+                            
+                            <!-- Ejercicios -->
+                            <h3 class="text-2xl font-bold text-indigo-900 mb-6">📝 Comprueba lo que has aprendido</h3>
+                            <div class="space-y-6">
+                                ${levelContent.questions.map((q, idx) => `
+                                    <div class="bg-gray-50 rounded-xl p-6">
+                                        <div class="font-bold text-lg mb-4">Pregunta ${idx + 1}: ${q.q}</div>
+                                        <div class="flex gap-2">
+                                            <input type="text" 
+                                                   id="answer-${idx}" 
+                                                   placeholder="Tu respuesta" 
+                                                   class="flex-1 px-4 py-3 border-2 rounded-lg focus:border-blue-500 outline-none">
+                                            <button onclick="checkAnswer(${idx})" 
+                                                    class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                                Comprobar
+                                            </button>
+                                        </div>
+                                        <div id="result-${idx}"></div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Inicializar
+        render();
+    </script>
+</body>
+</html>

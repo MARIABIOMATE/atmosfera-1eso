@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Atmósfera 1º ESO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-size: 18px; line-height: 1.8; }
+        h1 { font-size: 48px !important; }
+        h2 { font-size: 36px !important; }
+        h3 { font-size: 28px !important; }
+        h4 { font-size: 24px !important; }
+        
+        .option-card {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .option-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .option-card.correct {
+            border: 4px solid #10b981 !important;
+            background: #d1fae5 !important;
+            animation: bounce 0.5s;
+        }
+        .option-card.incorrect {
+            border: 4px solid #ef4444 !important;
+            background: #fee2e2 !important;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        img {
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-cyan-50 to-sky-100 min-h-screen">
+    <div id="app"></div>
+
+    <script>
+        // IMPORTANTE: Cambia esta ruta por la de tu GitHub
+        const IMG_PATH = "./imagenes/"; // O usa: "https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/imagenes/"
+
+        const state = {
+            currentView: 'blocks',
+            selectedBlock: null,
+            selectedLevel: null,
+            completedLevels: JSON.parse(localStorage.getItem('atmosfera-progress') || '{}'),
+            showResults: {}
+        };
+
+        const blocks = {
+            1: { 
+                title: "ORIGEN DE LA ATMÓSFERA", 
+                icon: "🌋", 
+                color: "from-orange-500 to-red-500",
+                levels: {
+                    "1.1": "Atmósfera primitiva",
+                    "1.2": "Formación océanos",
+                    "1.3": "Aparición oxígeno",
+                    "1.4": "Atmósfera actual"
+                }
+            },
+            2: { 
+                title: "COMPOSICIÓN DEL AIRE", 
+                icon: "💨", 
+                color: "from-blue-500 to-cyan-500",
+                levels: {
+                    "2.1": "Nitrógeno (78%)",
+                    "2.2": "Oxígeno (21%)",
+                    "2.3": "Otros gases",
+                    "2.4": "Partículas en el aire"
+                }
+            },
+            3: { 
+                title: "CAPAS DE LA ATMÓSFERA", 
+                icon: "🌍", 
+                color: "from-purple-500 to-pink-500",
+                levels: {
+                    "3.1": "Troposfera",
+                    "3.2": "Estratosfera",
+                    "3.3": "Mesosfera",
+                    "3.4": "Termosfera y Exosfera"
+                }
+            },
+            4: { 
+                title: "FUNCIONES DE LA ATMÓSFERA", 
+                icon: "🛡️", 
+                color: "from-green-500 to-emerald-500",
+                levels: {
+                    "4.1": "Efecto invernadero",
+                    "4.2": "Capa de ozono",
+                    "4.3": "Protección meteoritos",
+                    "4.4": "Contaminación"
+                }
+            }
+        };
+
+        const content = {
+            "1-1.1": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-orange-600">🌋 Atmósfera Primitiva</h3>
+                    <img src="${IMG_PATH}volcan-primitivo.jpg" alt="Volcanes primitivos" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-orange-100 p-8 rounded-2xl mb-6 border-4 border-orange-300">
+                        <p class="text-2xl mb-6"><strong>Hace 4.600 millones de años</strong> la Tierra no tenía atmósfera como la de ahora.</p>
+                        
+                        <h4 class="text-2xl font-bold mb-4 text-orange-700">Los volcanes crearon la atmósfera:</h4>
+                        <div class="space-y-4 text-xl">
+                            <p>🌋 Los <strong>volcanes</strong> expulsaban gases constantemente</p>
+                            <p>💨 Estos gases formaron la primera atmósfera</p>
+                            <p>☠️ Era <strong>tóxica</strong> para nosotros</p>
+                            <p>🔥 Hacía mucho <strong>calor</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-100 p-8 rounded-2xl border-4 border-yellow-300">
+                        <h4 class="text-2xl font-bold mb-4">¿Qué gases había?</h4>
+                        <div class="grid grid-cols-2 gap-4 text-xl">
+                            <div class="bg-white p-4 rounded-xl">💧 Vapor de agua (H₂O)</div>
+                            <div class="bg-white p-4 rounded-xl">🫧 Dióxido de carbono (CO₂)</div>
+                            <div class="bg-white p-4 rounded-xl">💨 Metano (CH₄)</div>
+                            <div class="bg-white p-4 rounded-xl">🧪 Amoníaco (NH₃)</div>
+                        </div>
+                        <p class="mt-6 text-2xl font-bold text-red-600">❌ NO había oxígeno (O₂)</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué crearon los volcanes?",
+                        options: [
+                            { text: "La primera atmósfera", correct: true },
+                            { text: "Los océanos", correct: false },
+                            { text: "Las montañas", correct: false },
+                            { text: "Los continentes", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "La atmósfera primitiva tenía oxígeno",
+                        correct: false
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Hace cuántos millones de años se formó la Tierra?",
+                        options: [
+                            { text: "1.000 millones", correct: false },
+                            { text: "2.500 millones", correct: false },
+                            { text: "4.600 millones", correct: true },
+                            { text: "10.000 millones", correct: false }
+                        ]
+                    }
+                ]
+            },
+            "1-1.2": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-blue-600">🌊 Se Formaron los Océanos</h3>
+                    <img src="${IMG_PATH}oceano-lluvia.jpg" alt="Formación de océanos" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-blue-100 p-8 rounded-2xl mb-6 border-4 border-blue-300">
+                        <p class="text-2xl mb-6"><strong>Hace 3.800 millones de años</strong> la Tierra se enfrió.</p>
+                        
+                        <img src="${IMG_PATH}ciclo-agua.jpg" alt="Ciclo del agua" class="w-full max-w-xl mx-auto mb-6 rounded-2xl">
+                        
+                        <h4 class="text-2xl font-bold mb-4 text-blue-700">¿Qué pasó?</h4>
+                        <div class="space-y-6">
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl"><strong>1.</strong> El vapor de agua se enfrió ❄️</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl"><strong>2.</strong> Comenzó a llover durante millones de años 🌧️</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl"><strong>3.</strong> El agua se acumuló en los huecos 💧</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl"><strong>4.</strong> Se formaron los primeros océanos 🌊</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-100 p-8 rounded-2xl border-4 border-green-300">
+                        <p class="text-2xl">💡 <strong>Importante:</strong> Los océanos fueron necesarios para que apareciera la vida.</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Hace cuántos millones de años se formaron los océanos?",
+                        options: [
+                            { text: "1.000 millones", correct: false },
+                            { text: "3.800 millones", correct: true },
+                            { text: "4.600 millones", correct: false },
+                            { text: "2.500 millones", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "El vapor de agua se condensó y formó lluvia",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué ocurrió con el agua al llover?",
+                        options: [
+                            { text: "Desapareció", correct: false },
+                            { text: "Se evaporó toda", correct: false },
+                            { text: "Se acumuló formando océanos", correct: true },
+                            { text: "Se congeló", correct: false }
+                        ]
+                    }
+                ]
+            },
+            "1-1.3": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-green-600">🦠 Aparece el Oxígeno</h3>
+                    <img src="${IMG_PATH}cianobacterias.jpg" alt="Cianobacterias" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-green-100 p-8 rounded-2xl mb-6 border-4 border-green-300">
+                        <p class="text-2xl mb-6"><strong>Hace 2.500 millones de años</strong> aparecieron las primeras formas de vida.</p>
+                        
+                        <h4 class="text-3xl font-bold mb-6 text-green-700">🦠 Las Cianobacterias</h4>
+                        <div class="bg-white p-8 rounded-xl mb-6">
+                            <p class="text-2xl mb-4">Fueron las <strong>primeras</strong> en producir oxígeno.</p>
+                            <p class="text-2xl mb-4">Hacían la <strong>fotosíntesis</strong>:</p>
+                            <div class="bg-green-50 p-6 rounded-xl text-center">
+                                <p class="text-3xl font-bold">CO₂ + H₂O + ☀️ → O₂ + Glucosa</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 text-xl">
+                            <div class="bg-blue-50 p-6 rounded-xl border-4 border-blue-200">
+                                <p class="text-2xl font-bold mb-3">☀️ Durante el día</p>
+                                <p>Producían oxígeno (O₂)</p>
+                            </div>
+                            <div class="bg-orange-50 p-6 rounded-xl border-4 border-orange-200">
+                                <p class="text-2xl font-bold mb-3">🌙 Durante la noche</p>
+                                <p>Consumían oxígeno</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-red-100 p-8 rounded-2xl border-4 border-red-300">
+                        <p class="text-2xl">⚠️ <strong>Curiosidad:</strong> Al principio, el oxígeno era <strong>veneno</strong> para muchos seres vivos!</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué seres vivos produjeron el primer oxígeno?",
+                        options: [
+                            { text: "Los dinosaurios", correct: false },
+                            { text: "Las cianobacterias", correct: true },
+                            { text: "Los peces", correct: false },
+                            { text: "Los árboles", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "Las cianobacterias hacían la fotosíntesis",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué producían las cianobacterias con la fotosíntesis?",
+                        options: [
+                            { text: "Dióxido de carbono", correct: false },
+                            { text: "Oxígeno", correct: true },
+                            { text: "Nitrógeno", correct: false },
+                            { text: "Metano", correct: false }
+                        ]
+                    }
+                ]
+            },
+            "1-1.4": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-sky-600">🌤️ Atmósfera Actual</h3>
+                    <img src="${IMG_PATH}atmosfera-actual.jpg" alt="Atmósfera actual" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-sky-100 p-8 rounded-2xl mb-6 border-4 border-sky-300">
+                        <p class="text-2xl mb-6"><strong>Hace 500 millones de años</strong> la atmósfera alcanzó su composición actual.</p>
+                        
+                        <img src="${IMG_PATH}composicion-aire.jpg" alt="Composición del aire" class="w-full max-w-xl mx-auto mb-6 rounded-2xl">
+                        
+                        <h4 class="text-2xl font-bold mb-4">Composición actual:</h4>
+                        <div class="space-y-4">
+                            <div class="bg-blue-200 p-6 rounded-xl text-center">
+                                <p class="text-4xl font-bold">78% Nitrógeno (N₂)</p>
+                            </div>
+                            <div class="bg-red-200 p-6 rounded-xl text-center">
+                                <p class="text-4xl font-bold">21% Oxígeno (O₂)</p>
+                            </div>
+                            <div class="bg-gray-200 p-6 rounded-xl text-center">
+                                <p class="text-4xl font-bold">1% Otros gases</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-100 p-8 rounded-2xl border-4 border-purple-300">
+                        <img src="${IMG_PATH}agujero-ozono.jpg" alt="Capa de ozono" class="w-full max-w-md mx-auto mb-6 rounded-2xl">
+                        <h4 class="text-2xl font-bold mb-3">La capa de ozono (O₃):</h4>
+                        <p class="text-xl">Se formó en la <strong>estratosfera</strong> gracias al oxígeno. Protege la vida de la radiación ultravioleta del Sol.</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué porcentaje de nitrógeno tiene la atmósfera actual?",
+                        options: [
+                            { text: "21%", correct: false },
+                            { text: "50%", correct: false },
+                            { text: "78%", correct: true },
+                            { text: "1%", correct: false }
+                        ]
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué porcentaje de oxígeno tiene?",
+                        options: [
+                            { text: "78%", correct: false },
+                            { text: "21%", correct: true },
+                            { text: "1%", correct: false },
+                            { text: "50%", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "La capa de ozono está en la estratosfera",
+                        correct: true
+                    }
+                ]
+            },
+            "2-2.1": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-blue-600">💨 Nitrógeno - El Gas Más Abundante</h3>
+                    <img src="${IMG_PATH}composicion-aire.jpg" alt="Composición del aire" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-blue-100 p-8 rounded-2xl mb-6 border-4 border-blue-300">
+                        <div class="text-center mb-8">
+                            <p class="text-8xl font-bold text-blue-600">78%</p>
+                            <p class="text-3xl font-bold">del aire es nitrógeno (N₂)</p>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-3xl mb-3">✅</p>
+                                <p class="text-xl font-bold mb-2">Está en todos lados</p>
+                                <p class="text-lg">Es el gas más abundante</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-3xl mb-3">😴</p>
+                                <p class="text-xl font-bold mb-2">Es inerte</p>
+                                <p class="text-lg">Casi no reacciona con nada</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-3xl mb-3">🚫</p>
+                                <p class="text-xl font-bold mb-2">No se respira</p>
+                                <p class="text-lg">No lo usamos al respirar</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-3xl mb-3">🌱</p>
+                                <p class="text-xl font-bold mb-2">Para las proteínas</p>
+                                <p class="text-lg">Las plantas lo necesitan</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué porcentaje del aire es nitrógeno?",
+                        options: [
+                            { text: "21%", correct: false },
+                            { text: "50%", correct: false },
+                            { text: "78%", correct: true },
+                            { text: "1%", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "El nitrógeno es el gas más abundante del aire",
+                        correct: true
+                    },
+                    {
+                        type: "true-false",
+                        q: "Respiramos el nitrógeno del aire",
+                        correct: false
+                    }
+                ]
+            },
+            "2-2.2": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-red-600">🫁 Oxígeno - El Gas de la Vida</h3>
+                    <img src="${IMG_PATH}composicion-aire.jpg" alt="Composición del aire" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-red-100 p-8 rounded-2xl mb-6 border-4 border-red-300">
+                        <div class="text-center mb-8">
+                            <p class="text-8xl font-bold text-red-600">21%</p>
+                            <p class="text-3xl font-bold">del aire es oxígeno (O₂)</p>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-3xl mb-3">🫁</p>
+                                <p class="text-xl font-bold mb-2">Para respirar</p>
+                                <p class="text-lg">Es esencial para la vida</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-3xl mb-3">🔥</p>
+                                <p class="text-xl font-bold mb-2">Para la combustión</p>
+                                <p class="text-lg">Permite que arda el fuego</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-3xl mb-3">🌱</p>
+                                <p class="text-xl font-bold mb-2">Lo producen plantas</p>
+                                <p class="text-lg">En la fotosíntesis</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-3xl mb-3">⚡</p>
+                                <p class="text-xl font-bold mb-2">Muy reactivo</p>
+                                <p class="text-lg">Se combina fácilmente</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué porcentaje de oxígeno hay en el aire?",
+                        options: [
+                            { text: "78%", correct: false },
+                            { text: "21%", correct: true },
+                            { text: "1%", correct: false },
+                            { text: "50%", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "El oxígeno es necesario para la respiración",
+                        correct: true
+                    },
+                    {
+                        type: "true-false",
+                        q: "Las plantas producen oxígeno en la fotosíntesis",
+                        correct: true
+                    }
+                ]
+            },
+            "2-2.3": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-gray-600">🌫️ Otros Gases (1%)</h3>
+                    <img src="${IMG_PATH}composicion-aire.jpg" alt="Composición del aire" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-gray-100 p-8 rounded-2xl mb-6 border-4 border-gray-300">
+                        <h4 class="text-2xl font-bold mb-6">El 1% restante incluye:</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-white p-6 rounded-xl border-l-8 border-purple-500">
+                                <p class="text-2xl font-bold mb-2">Argón (Ar) - 0,93%</p>
+                                <p class="text-lg">Gas inerte, no reacciona con nada</p>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl border-l-8 border-green-500">
+                                <p class="text-2xl font-bold mb-2">Dióxido de carbono (CO₂) - 0,04%</p>
+                                <p class="text-lg">Necesario para las plantas (fotosíntesis)</p>
+                                <p class="text-lg">🌡️ Gas de efecto invernadero</p>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl border-l-8 border-blue-500">
+                                <p class="text-2xl font-bold mb-2">Vapor de agua (H₂O) - Variable</p>
+                                <p class="text-lg">Forma las nubes y la lluvia</p>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl border-l-8 border-yellow-500">
+                                <p class="text-2xl font-bold mb-2">Ozono (O₃), Neón, Helio...</p>
+                                <p class="text-lg">En cantidades muy pequeñas</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué gas es el más abundante del 1% restante?",
+                        options: [
+                            { text: "CO₂", correct: false },
+                            { text: "Argón", correct: true },
+                            { text: "Ozono", correct: false },
+                            { text: "Helio", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "El CO₂ es necesario para la fotosíntesis",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué gas forma las nubes?",
+                        options: [
+                            { text: "Nitrógeno", correct: false },
+                            { text: "Oxígeno", correct: false },
+                            { text: "Vapor de agua", correct: true },
+                            { text: "Argón", correct: false }
+                        ]
+                    }
+                ]
+            },
+            "2-2.4": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-orange-600">🌫️ Partículas en el Aire</h3>
+                    <img src="${IMG_PATH}particulas-aire.jpg" alt="Partículas en el aire" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-orange-100 p-8 rounded-2xl mb-6 border-4 border-orange-300">
+                        <p class="text-2xl mb-6">Además de gases, el aire contiene <strong>partículas sólidas y líquidas</strong> muy pequeñas.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl font-bold mb-2">💨 Polen</p>
+                                <p class="text-lg">De las plantas, causa alergias</p>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl font-bold mb-2">🏭 Humo</p>
+                                <p class="text-lg">De fábricas y vehículos</p>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl font-bold mb-2">🧂 Sal marina</p>
+                                <p class="text-lg">Del mar, llevada por el viento</p>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl font-bold mb-2">🌋 Polvo y cenizas</p>
+                                <p class="text-lg">De volcanes y erosión</p>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-2xl font-bold mb-2">🦠 Microorganismos</p>
+                                <p class="text-lg">Bacterias y esporas</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-red-100 p-8 rounded-2xl border-4 border-red-300">
+                        <p class="text-2xl">⚠️ Algunas partículas pueden ser <strong>perjudiciales</strong> para la salud, especialmente en ciudades contaminadas.</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué tipo de partículas hay en el aire?",
+                        options: [
+                            { text: "Solo gases", correct: false },
+                            { text: "Sólidas y líquidas", correct: true },
+                            { text: "Solo líquidas", correct: false },
+                            { text: "Ninguna", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "El polen es una partícula que está en el aire",
+                        correct: true
+                    },
+                    {
+                        type: "true-false",
+                        q: "Todas las partículas del aire son beneficiosas",
+                        correct: false
+                    }
+                ]
+            },
+            "3-3.1": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-blue-600">☁️ Troposfera - Donde Vivimos</h3>
+                    <img src="${IMG_PATH}capas-atmosfera.jpg" alt="Capas de la atmósfera" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-blue-100 p-8 rounded-2xl mb-6 border-4 border-blue-300">
+                        <div class="text-center mb-8">
+                            <p class="text-8xl font-bold text-blue-600">0-12 km</p>
+                            <p class="text-3xl font-bold">La capa más cercana al suelo</p>
+                        </div>
+                        
+                        <img src="${IMG_PATH}troposfera.jpg" alt="Troposfera" class="w-full max-w-xl mx-auto mb-8 rounded-2xl">
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🏠</p>
+                                <p class="text-xl font-bold">Aquí vivimos</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">☁️</p>
+                                <p class="text-xl font-bold">Están las nubes</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🌧️</p>
+                                <p class="text-xl font-bold">Llueve y nieva aquí</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">❄️</p>
+                                <p class="text-xl font-bold">Hace más frío arriba</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-100 p-8 rounded-2xl border-4 border-yellow-300">
+                        <p class="text-2xl">✈️ Los aviones vuelan en el límite de la troposfera (unos 10-12 km de altura).</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Hasta qué altura llega la troposfera?",
+                        options: [
+                            { text: "5 km", correct: false },
+                            { text: "12 km", correct: true },
+                            { text: "50 km", correct: false },
+                            { text: "100 km", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "En la troposfera ocurren los fenómenos meteorológicos como la lluvia",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "Cuando subimos una montaña, ¿qué pasa con la temperatura?",
+                        options: [
+                            { text: "Aumenta", correct: false },
+                            { text: "Disminuye", correct: true },
+                            { text: "Se mantiene igual", correct: false },
+                            { text: "Depende del día", correct: false }
+                        ]
+                    }
+                ]
+            },
+            "3-3.2": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-purple-600">🛡️ Estratosfera - La Capa Protectora</h3>
+                    <img src="${IMG_PATH}capas-atmosfera.jpg" alt="Capas de la atmósfera" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-purple-100 p-8 rounded-2xl mb-6 border-4 border-purple-300">
+                        <div class="text-center mb-8">
+                            <p class="text-8xl font-bold text-purple-600">12-50 km</p>
+                            <p class="text-3xl font-bold">La segunda capa atmosférica</p>
+                        </div>
+                        
+                        <img src="${IMG_PATH}estratosfera-ozono.jpg" alt="Estratosfera y ozono" class="w-full max-w-xl mx-auto mb-8 rounded-2xl">
+                        
+                        <h4 class="text-2xl font-bold mb-6 text-purple-700">Características:</h4>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🛡️</p>
+                                <p class="text-xl font-bold mb-2">Capa de ozono</p>
+                                <p class="text-lg">Protege de rayos UV</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🌡️</p>
+                                <p class="text-xl font-bold mb-2">Temperatura sube</p>
+                                <p class="text-lg">Por el ozono</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🌵</p>
+                                <p class="text-xl font-bold mb-2">Muy seca</p>
+                                <p class="text-lg">Casi no hay vapor de agua</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">✈️</p>
+                                <p class="text-xl font-bold mb-2">Vuelos estratosféricos</p>
+                                <p class="text-lg">Aviones supersónicos</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-100 p-8 rounded-2xl border-4 border-green-300">
+                        <h4 class="text-2xl font-bold mb-3">🌟 La Capa de Ozono (O₃)</h4>
+                        <p class="text-xl">Está entre los 20-30 km de altura. El ozono absorbe la radiación ultravioleta del Sol, protegiendo la vida en la Tierra.</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Entre qué alturas está la estratosfera?",
+                        options: [
+                            { text: "0-12 km", correct: false },
+                            { text: "12-50 km", correct: true },
+                            { text: "50-80 km", correct: false },
+                            { text: "80-500 km", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "La estratosfera contiene la capa de ozono",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué hace la capa de ozono?",
+                        options: [
+                            { text: "Produce lluvia", correct: false },
+                            { text: "Protege de rayos UV", correct: true },
+                            { text: "Crea viento", correct: false },
+                            { text: "Forma nubes", correct: false }
+                        ]
+                    }
+                ]
+            },
+            "3-3.3": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-indigo-600">❄️ Mesosfera - La Capa Fría</h3>
+                    <img src="${IMG_PATH}capas-atmosfera.jpg" alt="Capas de la atmósfera" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-indigo-100 p-8 rounded-2xl mb-6 border-4 border-indigo-300">
+                        <div class="text-center mb-8">
+                            <p class="text-8xl font-bold text-indigo-600">50-80 km</p>
+                            <p class="text-3xl font-bold">La tercera capa atmosférica</p>
+                        </div>
+                        
+                        <img src="${IMG_PATH}mesosfera-meteoro.jpg" alt="Mesosfera y meteoritos" class="w-full max-w-xl mx-auto mb-8 rounded-2xl">
+                        
+                        <h4 class="text-2xl font-bold mb-6 text-indigo-700">Características:</h4>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">❄️</p>
+                                <p class="text-xl font-bold mb-2">La más fría</p>
+                                <p class="text-lg">Hasta -90°C</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">☄️</p>
+                                <p class="text-xl font-bold mb-2">Meteoritos se queman</p>
+                                <p class="text-lg">Estrellas fugaces</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🌡️</p>
+                                <p class="text-xl font-bold mb-2">Temperatura baja</p>
+                                <p class="text-lg">Al subir hace más frío</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🎈</p>
+                                <p class="text-xl font-bold mb-2">Difícil de estudiar</p>
+                                <p class="text-lg">Poco conocida</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-100 p-8 rounded-2xl border-4 border-yellow-300">
+                        <p class="text-2xl">⭐ <strong>Las estrellas fugaces</strong> son meteoritos que se desintegran al entrar en la mesosfera por la fricción con el aire.</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Cuál es la temperatura más baja en la mesosfera?",
+                        options: [
+                            { text: "0°C", correct: false },
+                            { text: "-30°C", correct: false },
+                            { text: "-90°C", correct: true },
+                            { text: "100°C", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "Los meteoritos se desintegran en la mesosfera",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué vemos cuando un meteorito se quema?",
+                        options: [
+                            { text: "Un rayo", correct: false },
+                            { text: "Una estrella fugaz", correct: true },
+                            { text: "La luna", correct: false },
+                            { text: "Un cometa", correct: false }
+                        ]
+                    }
+                ]
+            },
+            "3-3.4": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-pink-600">🌌 Termosfera y Exosfera - El Espacio Exterior</h3>
+                    <img src="${IMG_PATH}capas-atmosfera.jpg" alt="Capas de la atmósfera" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-pink-100 p-8 rounded-2xl mb-6 border-4 border-pink-300">
+                        <h4 class="text-3xl font-bold mb-6 text-pink-700">TERMOSFERA (80-500 km)</h4>
+                        
+                        <img src="${IMG_PATH}termosfera-aurora.jpg" alt="Auroras boreales" class="w-full max-w-xl mx-auto mb-8 rounded-2xl">
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🔥</p>
+                                <p class="text-xl font-bold mb-2">Muy caliente</p>
+                                <p class="text-lg">Hasta 1.500°C</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🌈</p>
+                                <p class="text-xl font-bold mb-2">Auroras boreales</p>
+                                <p class="text-lg">Luces del norte</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🛰️</p>
+                                <p class="text-xl font-bold mb-2">Satélites</p>
+                                <p class="text-lg">Orbitan aquí</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl">
+                                <p class="text-4xl mb-3">🚀</p>
+                                <p class="text-xl font-bold mb-2">Estación espacial</p>
+                                <p class="text-lg">ISS orbita aquí</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-100 p-8 rounded-2xl mb-6 border-4 border-purple-300">
+                        <h4 class="text-3xl font-bold mb-6 text-purple-700">EXOSFERA (500-10.000 km)</h4>
+                        
+                        <img src="${IMG_PATH}exosfera-satelite.jpg" alt="Satélites en exosfera" class="w-full max-w-xl mx-auto mb-6 rounded-2xl">
+                        
+                        <div class="bg-white p-6 rounded-xl">
+                            <p class="text-xl mb-4">Es la <strong>capa más externa</strong> de la atmósfera.</p>
+                            <p class="text-xl mb-4">⚫ Casi no hay aire</p>
+                            <p class="text-xl mb-4">🌌 Transición al espacio exterior</p>
+                            <p class="text-xl">🛰️ Satélites de comunicaciones</p>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Dónde se producen las auroras boreales?",
+                        options: [
+                            { text: "Troposfera", correct: false },
+                            { text: "Estratosfera", correct: false },
+                            { text: "Termosfera", correct: true },
+                            { text: "Mesosfera", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "La termosfera es muy caliente (hasta 1.500°C)",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Cuál es la capa más externa de la atmósfera?",
+                        options: [
+                            { text: "Troposfera", correct: false },
+                            { text: "Estratosfera", correct: false },
+                            { text: "Termosfera", correct: false },
+                            { text: "Exosfera", correct: true }
+                        ]
+                    }
+                ]
+            },
+            "4-4.1": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-green-600">🌡️ Efecto Invernadero</h3>
+                    <img src="${IMG_PATH}efecto-invernadero.jpg" alt="Efecto invernadero" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-green-100 p-8 rounded-2xl mb-6 border-4 border-green-300">
+                        <h4 class="text-2xl font-bold mb-6">¿Qué es el efecto invernadero?</h4>
+                        <p class="text-xl mb-6">Es un proceso <strong>NATURAL</strong> que mantiene la Tierra a una temperatura adecuada para la vida.</p>
+                        
+                        <div class="bg-white p-8 rounded-xl mb-6">
+                            <h5 class="text-2xl font-bold mb-4">¿Cómo funciona?</h5>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <span class="text-4xl">1️⃣</span>
+                                    <p class="text-xl">El Sol envía radiación (luz y calor) a la Tierra</p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-4xl">2️⃣</span>
+                                    <p class="text-xl">La Tierra absorbe parte y refleja otra parte</p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-4xl">3️⃣</span>
+                                    <p class="text-xl">Los gases invernadero retienen el calor</p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-4xl">4️⃣</span>
+                                    <p class="text-xl">La Tierra mantiene una temperatura estable (~15°C)</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-blue-100 p-4 rounded-xl text-center">
+                                <p class="text-xl font-bold">CO₂</p>
+                                <p>Dióxido de carbono</p>
+                            </div>
+                            <div class="bg-blue-100 p-4 rounded-xl text-center">
+                                <p class="text-xl font-bold">CH₄</p>
+                                <p>Metano</p>
+                            </div>
+                            <div class="bg-blue-100 p-4 rounded-xl text-center">
+                                <p class="text-xl font-bold">H₂O</p>
+                                <p>Vapor de agua</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-red-100 p-8 rounded-2xl border-4 border-red-300">
+                        <p class="text-2xl">⚠️ <strong>Problema:</strong> El exceso de gases invernadero (por actividades humanas) está causando el <strong>calentamiento global</strong>.</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "true-false",
+                        q: "El efecto invernadero es un proceso natural",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué temperatura media tendría la Tierra SIN efecto invernadero?",
+                        options: [
+                            { text: "15°C", correct: false },
+                            { text: "0°C", correct: false },
+                            { text: "-18°C", correct: true },
+                            { text: "30°C", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "El CO₂ es un gas de efecto invernadero",
+                        correct: true
+                    }
+                ]
+            },
+            "4-4.2": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-blue-600">🛡️ Capa de Ozono</h3>
+                    <img src="${IMG_PATH}agujero-ozono.jpg" alt="Capa de ozono" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-blue-100 p-8 rounded-2xl mb-6 border-4 border-blue-300">
+                        <h4 class="text-2xl font-bold mb-6">¿Qué es la capa de ozono?</h4>
+                        <p class="text-xl mb-6">Es una zona de la <strong>estratosfera</strong> (20-30 km) rica en ozono (O₃) que protege la vida en la Tierra.</p>
+                        
+                        <div class="bg-white p-8 rounded-xl mb-6">
+                            <h5 class="text-2xl font-bold mb-4 text-green-600">✅ ¿Qué hace?</h5>
+                            <div class="space-y-4">
+                                <p class="text-xl">🛡️ Absorbe los <strong>rayos ultravioleta (UV)</strong> del Sol</p>
+                                <p class="text-xl">👤 Protege nuestra piel de quemaduras y cáncer</p>
+                                <p class="text-xl">🌱 Protege a plantas y animales</p>
+                                <p class="text-xl">🧬 Evita daños en el ADN de los seres vivos</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-red-50 p-8 rounded-xl border-4 border-red-300">
+                            <h5 class="text-2xl font-bold mb-4 text-red-600">❌ El agujero de ozono</h5>
+                            <p class="text-xl mb-4">En los años 1980 se descubrió un <strong>agujero en la capa de ozono</strong> sobre la Antártida.</p>
+                            <p class="text-xl mb-4"><strong>Causa:</strong> Gases CFC (clorofluorocarbonos) de sprays y refrigeradores</p>
+                            <p class="text-xl">✅ <strong>Solución:</strong> Se prohibieron los CFC (Protocolo de Montreal, 1987). La capa se está recuperando.</p>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿En qué capa está el ozono?",
+                        options: [
+                            { text: "Troposfera", correct: false },
+                            { text: "Estratosfera", correct: true },
+                            { text: "Mesosfera", correct: false },
+                            { text: "Termosfera", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "La capa de ozono protege de los rayos UV del Sol",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué gases dañaban la capa de ozono?",
+                        options: [
+                            { text: "Oxígeno", correct: false },
+                            { text: "CFC", correct: true },
+                            { text: "Nitrógeno", correct: false },
+                            { text: "Argón", correct: false }
+                        ]
+                    }
+                ]
+            },
+            "4-4.3": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-orange-600">☄️ Protección contra Meteoritos</h3>
+                    <img src="${IMG_PATH}proteccion-meteori.jpg" alt="Protección de meteoritos" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-orange-100 p-8 rounded-2xl mb-6 border-4 border-orange-300">
+                        <h4 class="text-2xl font-bold mb-6">La atmósfera como escudo protector</h4>
+                        
+                        <div class="bg-white p-8 rounded-xl mb-6">
+                            <h5 class="text-2xl font-bold mb-4">¿Qué son los meteoritos?</h5>
+                            <p class="text-xl mb-4">Son <strong>rocas del espacio</strong> que entran en la atmósfera terrestre a gran velocidad.</p>
+                            
+                            <div class="space-y-4 mt-6">
+                                <div class="flex items-start gap-4">
+                                    <span class="text-4xl">1️⃣</span>
+                                    <p class="text-xl">El meteorito entra a la atmósfera a <strong>miles de km/h</strong></p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-4xl">2️⃣</span>
+                                    <p class="text-xl">La <strong>fricción con el aire</strong> lo calienta muchísimo</p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-4xl">3️⃣</span>
+                                    <p class="text-xl">El meteorito se <strong>desintegra</strong> (se quema) en la mesosfera</p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-4xl">4️⃣</span>
+                                    <p class="text-xl">Vemos una <strong>estrella fugaz</strong> ⭐</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-green-100 p-6 rounded-xl border-4 border-green-300">
+                                <p class="text-3xl mb-3">✅</p>
+                                <p class="text-xl font-bold mb-2">La mayoría se desintegran</p>
+                                <p class="text-lg">El 99% no llega al suelo</p>
+                            </div>
+                            <div class="bg-blue-100 p-6 rounded-xl border-4 border-blue-300">
+                                <p class="text-3xl mb-3">☄️</p>
+                                <p class="text-xl font-bold mb-2">Algunos llegan</p>
+                                <p class="text-lg">Los más grandes pueden impactar</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-100 p-8 rounded-2xl border-4 border-yellow-300">
+                        <p class="text-2xl">💡 <strong>Sin atmósfera</strong> (como en la Luna), todos los meteoritos llegarían al suelo y crearían cráteres.</p>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "true-false",
+                        q: "La atmósfera protege la Tierra de los meteoritos",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿En qué capa se desintegran la mayoría de meteoritos?",
+                        options: [
+                            { text: "Troposfera", correct: false },
+                            { text: "Estratosfera", correct: false },
+                            { text: "Mesosfera", correct: true },
+                            { text: "Termosfera", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "Una estrella fugaz es un meteorito que se quema",
+                        correct: true
+                    }
+                ]
+            },
+            "4-4.4": {
+                theory: `
+                    <h3 class="text-4xl font-bold mb-6 text-red-600">🏭 Contaminación Atmosférica</h3>
+                    <img src="${IMG_PATH}contaminacion-ciud.jpg" alt="Contaminación en ciudad" class="w-full max-w-2xl mx-auto mb-8 rounded-2xl shadow-2xl">
+                    
+                    <div class="bg-red-100 p-8 rounded-2xl mb-6 border-4 border-red-300">
+                        <h4 class="text-2xl font-bold mb-6">¿Qué es la contaminación atmosférica?</h4>
+                        <p class="text-xl mb-6">Es la presencia en el aire de <strong>sustancias que alteran su calidad</strong> y son perjudiciales para la salud y el medio ambiente.</p>
+                        
+                        <div class="bg-white p-8 rounded-xl mb-6">
+                            <h5 class="text-2xl font-bold mb-4 text-red-600">🏭 Principales contaminantes:</h5>
+                            <div class="space-y-4">
+                                <div class="bg-gray-100 p-4 rounded-xl">
+                                    <p class="text-xl font-bold mb-2">CO₂ (Dióxido de carbono)</p>
+                                    <p class="text-lg">De coches, fábricas, calefacciones → Calentamiento global</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-xl">
+                                    <p class="text-xl font-bold mb-2">CO (Monóxido de carbono)</p>
+                                    <p class="text-lg">De combustiones incompletas → Tóxico para las personas</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-xl">
+                                    <p class="text-xl font-bold mb-2">SO₂ (Dióxido de azufre)</p>
+                                    <p class="text-lg">De quemar carbón y petróleo → Lluvia ácida</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-xl">
+                                    <p class="text-xl font-bold mb-2">NOₓ (Óxidos de nitrógeno)</p>
+                                    <p class="text-lg">De motores de coches → Smog y lluvia ácida</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-xl">
+                                    <p class="text-xl font-bold mb-2">Partículas en suspensión</p>
+                                    <p class="text-lg">Hollín, polvo, humo → Problemas respiratorios</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-orange-100 p-6 rounded-xl border-4 border-orange-300">
+                                <p class="text-3xl mb-3">🌧️</p>
+                                <p class="text-xl font-bold mb-2">Lluvia ácida</p>
+                                <p class="text-lg">Daña bosques y construcciones</p>
+                            </div>
+                            <div class="bg-yellow-100 p-6 rounded-xl border-4 border-yellow-300">
+                                <p class="text-3xl mb-3">🌫️</p>
+                                <p class="text-xl font-bold mb-2">Smog</p>
+                                <p class="text-lg">Niebla contaminante en ciudades</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-100 p-8 rounded-2xl border-4 border-green-300">
+                        <h5 class="text-2xl font-bold mb-4 text-green-700">✅ Soluciones:</h5>
+                        <div class="grid md:grid-cols-2 gap-4 text-xl">
+                            <p>♻️ Usar energías renovables</p>
+                            <p>🚲 Transporte público y bicicleta</p>
+                            <p>🌳 Plantar árboles</p>
+                            <p>⚡ Consumir menos energía</p>
+                            <p>🏭 Filtros en fábricas</p>
+                            <p>🚗 Coches eléctricos</p>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        q: "¿Qué gas aumenta el efecto invernadero?",
+                        options: [
+                            { text: "Oxígeno", correct: false },
+                            { text: "CO₂", correct: true },
+                            { text: "Nitrógeno", correct: false },
+                            { text: "Argón", correct: false }
+                        ]
+                    },
+                    {
+                        type: "true-false",
+                        q: "La lluvia ácida daña los bosques y construcciones",
+                        correct: true
+                    },
+                    {
+                        type: "multiple-choice",
+                        q: "¿Cuál es una solución para reducir la contaminación?",
+                        options: [
+                            { text: "Usar más coches", correct: false },
+                            { text: "Quemar más carbón", correct: false },
+                            { text: "Usar energías renovables", correct: true },
+                            { text: "Talar más árboles", correct: false }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        function selectBlock(blockId) {
+            state.selectedBlock = blockId;
+            state.currentView = 'levels';
+            render();
+        }
+
+        function selectLevel(levelId) {
+            state.selectedLevel = levelId;
+            state.currentView = 'content';
+            state.showResults = {};
+            render();
+        }
+
+        function backToBlocks() {
+            state.currentView = 'blocks';
+            state.selectedBlock = null;
+            state.selectedLevel = null;
+            render();
+        }
+
+        function backToLevels() {
+            state.currentView = 'levels';
+            state.selectedLevel = null;
+            render();
+        }
+
+        function checkMultipleChoice(questionIndex, optionIndex) {
+            const key = `${state.selectedBlock}-${state.selectedLevel}`;
+            const question = content[key].questions[questionIndex];
+            const isCorrect = question.options[optionIndex].correct;
+            
+            state.showResults[questionIndex] = isCorrect;
+            
+            document.querySelectorAll(`[data-question="${questionIndex}"]`).forEach(el => {
+                el.classList.remove('correct', 'incorrect');
+            });
+            
+            const selectedCard = document.querySelector(`[data-question="${questionIndex}"][data-option="${optionIndex}"]`);
+            
+            setTimeout(() => {
+                if (isCorrect) {
+                    selectedCard.classList.add('correct');
+                    // Marcar nivel como completado
+                    if (!state.completedLevels[key]) {
+                        state.completedLevels[key] = [];
+                    }
+                    if (!state.completedLevels[key].includes(questionIndex)) {
+                        state.completedLevels[key].push(questionIndex);
+                        localStorage.setItem('atmosfera-progress', JSON.stringify(state.completedLevels));
+                    }
+                } else {
+                    selectedCard.classList.add('incorrect');
+                }
+            }, 300);
+        }
+
+        function checkTrueFalse(questionIndex, answer) {
+            const key = `${state.selectedBlock}-${state.selectedLevel}`;
+            const question = content[key].questions[questionIndex];
+            const isCorrect = answer === question.correct;
+            
+            state.showResults[questionIndex] = isCorrect;
+            
+            document.querySelectorAll(`[data-tf="${questionIndex}"]`).forEach(el => {
+                el.classList.remove('correct', 'incorrect');
+            });
+            
+            const selectedCard = document.querySelector(`[data-tf="${questionIndex}"][data-value="${answer}"]`);
+            
+            setTimeout(() => {
+                if (isCorrect) {
+                    selectedCard.classList.add('correct');
+                    // Marcar nivel como completado
+                    if (!state.completedLevels[key]) {
+                        state.completedLevels[key] = [];
+                    }
+                    if (!state.completedLevels[key].includes(questionIndex)) {
+                        state.completedLevels[key].push(questionIndex);
+                        localStorage.setItem('atmosfera-progress', JSON.stringify(state.completedLevels));
+                    }
+                } else {
+                    selectedCard.classList.add('incorrect');
+                }
+            }, 300);
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (state.currentView === 'blocks') {
+                app.innerHTML = `
+                    <div class="max-w-7xl mx-auto p-6">
+                        <div class="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl shadow-2xl p-12 mb-8 text-white">
+                            <h1 class="text-6xl font-bold mb-4">🌍 La Atmósfera</h1>
+                            <p class="text-3xl">1º ESO - Biología y Geología</p>
+                        </div>
+                        
+                        <h2 class="text-4xl font-bold text-gray-800 mb-8">📚 Elige un Bloque para Empezar</h2>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            ${Object.entries(blocks).map(([id, block]) => `
+                                <div onclick="selectBlock('${id}')" 
+                                     class="bg-gradient-to-br ${block.color} rounded-3xl shadow-2xl p-8 cursor-pointer transform transition hover:scale-105 text-white">
+                                    <div class="text-8xl mb-6">${block.icon}</div>
+                                    <h3 class="text-3xl font-bold mb-3">BLOQUE ${id}</h3>
+                                    <p class="text-2xl">${block.title}</p>
+                                    <div class="mt-6 text-xl opacity-90">
+                                        👉 ${Object.keys(block.levels).length} niveles
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (state.currentView === 'levels') {
+                const block = blocks[state.selectedBlock];
+                app.innerHTML = `
+                    <div class="max-w-7xl mx-auto p-6">
+                        <button onclick="backToBlocks()" 
+                                class="mb-8 px-8 py-4 bg-white rounded-2xl shadow-lg hover:bg-gray-50 transition text-2xl font-bold">
+                            ← Volver
+                        </button>
+                        
+                        <div class="bg-gradient-to-r ${block.color} rounded-3xl shadow-2xl p-12 mb-8 text-white">
+                            <div class="flex items-center gap-6">
+                                <div class="text-9xl">${block.icon}</div>
+                                <div>
+                                    <h2 class="text-4xl font-bold">${block.title}</h2>
+                                    <p class="text-2xl opacity-90 mt-3">Elige un nivel</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-8">
+                            ${Object.entries(block.levels).map(([levelId, levelName]) => {
+                                const key = `${state.selectedBlock}-${levelId}`;
+                                const isCompleted = state.completedLevels[key] && state.completedLevels[key].length > 0;
+                                return `
+                                    <div onclick="selectLevel('${levelId}')" 
+                                         class="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition transform hover:scale-105">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <span class="bg-blue-500 text-white px-6 py-2 rounded-full text-xl font-bold">
+                                                Nivel ${levelId}
+                                            </span>
+                                            ${isCompleted ? '<span class="text-green-600 text-5xl">✓</span>' : ''}
+                                        </div>
+                                        <h3 class="text-2xl font-bold text-gray-800">${levelName}</h3>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (state.currentView === 'content') {
+                const key = `${state.selectedBlock}-${state.selectedLevel}`;
+                const levelContent = content[key];
+                const block = blocks[state.selectedBlock];
+                const levelName = block.levels[state.selectedLevel];
+                
+                if (!levelContent) {
+                    app.innerHTML = `
+                        <div class="max-w-4xl mx-auto p-6">
+                            <button onclick="backToLevels()" class="mb-6 px-8 py-4 bg-white rounded-2xl shadow-lg text-2xl font-bold">
+                                ← Volver
+                            </button>
+                            <div class="bg-yellow-100 border-4 border-yellow-400 rounded-3xl p-12 text-center">
+                                <p class="text-3xl">⚠️ Contenido en desarrollo</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                app.innerHTML = `
+                    <div class="max-w-5xl mx-auto p-6">
+                        <button onclick="backToLevels()" 
+                                class="mb-8 px-8 py-4 bg-white rounded-2xl shadow-lg hover:bg-gray-50 transition text-2xl font-bold">
+                            ← Volver a Niveles
+                        </button>
+                        
+                        <div class="bg-white rounded-3xl shadow-2xl p-12 mb-8">
+                            <div class="text-xl text-gray-500 mb-3">Bloque ${state.selectedBlock} - Nivel ${state.selectedLevel}</div>
+                            <h2 class="text-4xl font-bold text-gray-800 mb-8">${levelName}</h2>
+                            
+                            <div class="prose max-w-none mb-12">
+                                ${levelContent.theory}
+                            </div>
+                            
+                            <hr class="my-12 border-4 border-gray-200 rounded">
+                            
+                            <h3 class="text-4xl font-bold text-indigo-900 mb-8">🎮 ¡Ahora practica!</h3>
+                            <div class="space-y-12">
+                                ${levelContent.questions.map((q, idx) => {
+                                    if (q.type === 'multiple-choice') {
+                                        return `
+                                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border-4 border-purple-200">
+                                                <div class="text-3xl font-bold mb-6">Pregunta ${idx + 1}</div>
+                                                <div class="text-2xl font-bold mb-8">${q.q}</div>
+                                                ${q.image ? `<img src="${q.image}" alt="Imagen" class="w-full max-w-md mx-auto mb-8 rounded-2xl shadow-xl">` : ''}
+                                                <div class="grid md:grid-cols-2 gap-6">
+                                                    ${q.options.map((opt, optIdx) => `
+                                                        <div class="option-card bg-white rounded-2xl p-8 border-4 border-gray-300 text-center"
+                                                             data-question="${idx}" 
+                                                             data-option="${optIdx}"
+                                                             onclick="checkMultipleChoice(${idx}, ${optIdx})">
+                                                            <p class="text-2xl font-bold">${opt.text}</p>
+                                                        </div>
+                                                    `).join('')}
+                                                </div>
+                                            </div>
+                                        `;
+                                    } else if (q.type === 'true-false') {
+                                        return `
+                                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border-4 border-blue-200">
+                                                <div class="text-3xl font-bold mb-6">Pregunta ${idx + 1}</div>
+                                                <div class="text-2xl font-bold mb-8">${q.q}</div>
+                                                ${q.image ? `<img src="${q.image}" alt="Imagen" class="w-full max-w-md mx-auto mb-8 rounded-2xl shadow-xl">` : ''}
+                                                <div class="grid grid-cols-2 gap-6">
+                                                    <div class="option-card bg-green-100 rounded-2xl p-12 border-4 border-green-300 text-center"
+                                                         data-tf="${idx}" 
+                                                         data-value="true"
+                                                         onclick="checkTrueFalse(${idx}, true)">
+                                                        <p class="text-6xl mb-4">✅</p>
+                                                        <p class="text-3xl font-bold">VERDADERO</p>
+                                                    </div>
+                                                    <div class="option-card bg-red-100 rounded-2xl p-12 border-4 border-red-300 text-center"
+                                                         data-tf="${idx}" 
+                                                         data-value="false"
+                                                         onclick="checkTrueFalse(${idx}, false)">
+                                                        <p class="text-6xl mb-4">❌</p>
+                                                        <p class="text-3xl font-bold">FALSO</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Inicializar
+        render();
+    </script>
+</body>
+</html>
